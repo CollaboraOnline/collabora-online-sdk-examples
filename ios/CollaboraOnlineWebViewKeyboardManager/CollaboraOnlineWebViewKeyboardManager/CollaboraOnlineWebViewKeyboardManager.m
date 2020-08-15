@@ -66,8 +66,6 @@
 
 
 - (void)insertText:(NSString *)text {
-    NSLog(@"insertText:'%@'", text);
-
     NSMutableString *quotedText = [NSMutableString string];
 
     for (unsigned i = 0; i < text.length; i++) {
@@ -92,8 +90,6 @@
  }
 
 - (void)deleteBackward {
-    NSLog(@"deleteBackward");
-
     [self postMessage:@"{id: 'COKbdMgr', command: 'deleteBackward'}"];
 }
 
@@ -173,8 +169,6 @@
 }
 
 - (void)keyboardDidHide:(NSNotification *)notification {
-    NSLog(@"keyboardDidHide");
-
     if (control != nil) {
         [control removeFromSuperview];
         control = nil;
