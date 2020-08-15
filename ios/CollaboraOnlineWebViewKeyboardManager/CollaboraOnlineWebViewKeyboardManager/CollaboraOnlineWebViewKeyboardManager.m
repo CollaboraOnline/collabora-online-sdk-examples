@@ -16,51 +16,46 @@
 
 @interface _COWVKMKeyInputControl : UIControl <UIKeyInput> {
     WKWebView *webView;
-    NSString *insertTextFunction;
-    NSString *deleteBackwardFunction;
 }
 
-- (instancetype)initForWebView:(nonnull WKWebView *)webView
-        withInsertTextFunction:(nonnull NSString *)insertTextFunction
-     andDeleteBackwardFunction:(nonnull NSString *)deleteBackwardFunction;
+- (instancetype)initForWebView:(nonnull WKWebView *)webView;
 
 @end
 
 @implementation _COWVKMKeyInputControl
 
-- (instancetype)initForWebView:(nonnull WKWebView *)webView
-        withInsertTextFunction:(nonnull NSString *)insertTextFunction
-     andDeleteBackwardFunction:(nonnull NSString *)deleteBackwardFunction {
+- (instancetype)initForWebView:(nonnull WKWebView *)webView {
     self = [super init];
 
     self->webView = webView;
-    self->insertTextFunction = insertTextFunction;
-    self->deleteBackwardFunction = deleteBackwardFunction;
 
     return self;
 }
 
-- (void)insertText:(NSString *)text {
-    NSLog(@"insertText:'%@'", text);
+- (void)postMessage:(NSString *)message {
 
     NSMutableString *js = [NSMutableString string];
 
-    [js setString:insertTextFunction];
-    [js appendString:@"('"];
+    [js appendString:@""
+       "{"
+       "     const message = "];
 
-    for (unsigned i = 0; i < text.length; i++) {
-        const unichar c = [text characterAtIndex:i];
-        if (c == '\'' || c == '\\') {
-            [js appendString:@"\\"];
-            [js appendFormat:@"%c", c];
-        } else if (c < ' ' || c >= 0x7F) {
-            [js appendFormat:@"\\u%04X", c];
-        } else {
-            [js appendFormat:@"%c", c];
-        }
-    }
+    [js appendString:message];
 
-    [js appendString:@"');"];
+    // We check if window.COKbdMgrCallback is a function, and in that case call that directly.
+    // Otherwise we iterate over iframes and post a message that the event listener that we install
+    // will receive and handle, and recurse.
+
+    [js appendString:@";"
+        "     if (typeof window.COKbdMgrCallback === 'function') {"
+        "         window.COKbdMgrCallback(message);"
+        "     } else {"
+        "         const iframes = document.getElementsByTagName('iframe');"
+        "         for (let i = 0; i < iframes.length; i++) {"
+        "             iframes[i].contentWindow.postMessage(message, '*');"
+        "         };"
+        "     }"
+        "}"];
 
     [webView evaluateJavaScript:js
               completionHandler:^(id _Nullable obj, NSError *_Nullable error) {
@@ -69,15 +64,37 @@
               }];
 }
 
+
+- (void)insertText:(NSString *)text {
+    NSLog(@"insertText:'%@'", text);
+
+    NSMutableString *quotedText = [NSMutableString string];
+
+    for (unsigned i = 0; i < text.length; i++) {
+        const unichar c = [text characterAtIndex:i];
+        if (c == '\'' || c == '\\') {
+            [quotedText appendString:@"\\"];
+            [quotedText appendFormat:@"%c", c];
+        } else if (c < ' ' || c >= 0x7F) {
+            [quotedText appendFormat:@"\\u%04X", c];
+        } else {
+            [quotedText appendFormat:@"%c", c];
+        }
+    }
+
+    NSMutableString *message = [NSMutableString string];
+
+    [message appendString:@"{id: 'COKbdMgr', command: 'insertText', text: '"];
+    [message appendString:quotedText];
+    [message appendString:@"'}"];
+
+    [self postMessage:message];
+ }
+
 - (void)deleteBackward {
     NSLog(@"deleteBackward");
 
-    NSString *js = [deleteBackwardFunction stringByAppendingString:@"();"];
-    [webView evaluateJavaScript:js
-              completionHandler:^(id _Nullable obj, NSError *_Nullable error) {
-                if (error)
-                    NSLog(@"Error when executing '%@': %@", js, [error localizedDescription]);
-              }];
+    [self postMessage:@"{id: 'COKbdMgr', command: 'deleteBackward'}"];
 }
 
 - (BOOL)canBecomeFirstResponder {
@@ -90,8 +107,6 @@
 
 @interface CollaboraOnlineWebViewKeyboardManager () <WKScriptMessageHandler> {
     WKWebView *webView;
-    NSString *jsForInsertText;
-    NSString *jsForDeleteBackward;
     _COWVKMKeyInputControl *control;
 }
 
@@ -99,30 +114,31 @@
 
 @implementation CollaboraOnlineWebViewKeyboardManager
 
-- (CollaboraOnlineWebViewKeyboardManager *)initForWebView:(nonnull WKWebView *)webView
-                                         executeAfterInit:(nullable NSString *)jsAfterInit
-                                     executeForInsertText:(nullable NSString *)jsForInsertText
-                                 executeForDeleteBackward:(nullable NSString *)jsForDeleteBackward {
+- (CollaboraOnlineWebViewKeyboardManager *)initForWebView:(nonnull WKWebView *)webView {
     self->webView = webView;
-    self->jsForInsertText = jsForInsertText;
-    self->jsForDeleteBackward = jsForDeleteBackward;
 
     [webView.configuration.userContentController
         addScriptMessageHandler:self
                            name:@"CollaboraOnlineWebViewKeyboardManager"];
 
-    // Define functions window.DisplayKeyboard and window.HideKeyboard that will contact our code
-    // below to do it. The JS can check for the existence of these functions, and if there, use them
-    // instead of any text area focus() and blir() calls that are unreliable or generally act weird.
+    NSString *script = @"window.addEventListener('message', function(event) {"
+        "    if (event.data.id === 'COKbdMgr') {"
+        "        if (typeof window.COKbdMgrCallback === 'function') {"
+        "            window.COKbdMgrCallback(event.data);"
+        "         } else {"
+        "             const iframes = document.getElementsByTagName('iframe');"
+        "             for (let i = 0; i < iframes.length; i++) {"
+        "                 iframes[i].contentWindow.postMessage(event.data, '*');"
+        "             };"
+        "          }"
+        "    }"
+        "});";
 
-    if (jsAfterInit) {
-        [self->webView evaluateJavaScript:jsAfterInit
-                        completionHandler:^(id _Nullable obj, NSError *_Nullable error) {
-                          if (error)
-                              NSLog(@"Error when executing '%@': %@", jsAfterInit,
-                                    [error localizedDescription]);
-                        }];
-    }
+    WKUserScript *userScript = [[WKUserScript alloc] initWithSource:script
+                                                      injectionTime:WKUserScriptInjectionTimeAtDocumentEnd
+                                                   forMainFrameOnly:NO];
+
+    [webView.configuration.userContentController addUserScript:userScript];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardDidHide:)
@@ -141,9 +157,7 @@
 
     if ([message.body isEqualToString:@"display"]) {
         if (control == nil) {
-            control = [[_COWVKMKeyInputControl alloc] initForWebView:self->webView
-                                              withInsertTextFunction:jsForInsertText
-                                           andDeleteBackwardFunction:jsForDeleteBackward];
+            control = [[_COWVKMKeyInputControl alloc] initForWebView:self->webView];
             [self->webView addSubview:control];
             [control becomeFirstResponder];
         }

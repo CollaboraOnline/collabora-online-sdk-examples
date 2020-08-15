@@ -17,24 +17,11 @@
 @interface CollaboraOnlineWebViewKeyboardManager : NSObject
 
 /**
- * @param webView The WKWebView that displays Collabora Online's loleaflet.html.
- *
- * @param jsAfterInit The name of a JavaScript function to invoke once this method has done its job.
- *
- * @param jsForInput The name of a JavaScript function to call, with the text to be input as
- * parameter, for each keyboard input operation.
- *
- * The string is typically one Unicode code point
- * (that can consist of one or two UTF-16 units) but might be more, especially for more complex
- * emojis.
- *
- * @param jsForDelete The name of a JavaScript function to call when the delete key is pressed on
- * the keyboard.
+ * @param webView The WKWebView that displays Collabora Online's loleaflet.html. Will not do
+ * anything useful for WKWebViews not displaying that. The loleaflet.html can be in an arbitrarily
+ * deeply nested iframe.
  */
-- (nonnull CollaboraOnlineWebViewKeyboardManager *)initForWebView:(nonnull WKWebView *)webView
-                                                 executeAfterInit:(nullable NSString *)jsAfterInit
-                                             executeForInsertText:(nullable NSString *)jsForInput
-                                         executeForDeleteBackward:(nullable NSString *)jsForDelete;
+- (nonnull CollaboraOnlineWebViewKeyboardManager *)initForWebView:(nonnull WKWebView *)webView;
 
 @end
 

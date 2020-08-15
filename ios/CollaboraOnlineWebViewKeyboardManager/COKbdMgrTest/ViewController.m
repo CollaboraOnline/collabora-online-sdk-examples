@@ -68,10 +68,7 @@
     // are those we know are in the test.html.
 
     keyboardManager =
-        [[CollaboraOnlineWebViewKeyboardManager alloc] initForWebView:webView
-                                                     executeAfterInit:nil
-                                                 executeForInsertText:@"keyboardInsertText"
-                                             executeForDeleteBackward:@"keyboardDeleteBackward"];
+        [[CollaboraOnlineWebViewKeyboardManager alloc] initForWebView:webView];
 }
 
 @end

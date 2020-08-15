@@ -30,52 +30,72 @@
 
       const depth = getParameterByName("depth") ? Number(getParameterByName("depth")) : 0;
 
-      // The embedding iOS app calls this function (in the outermost document) when the user is
-      // inserting text with the keyboard.
+      // The embedding iOS app calls this function when the user is inserting text with the
+      // keyboard. It is called regardless whether it is in the outermost document or inside in an
+      // iframe, thanks to the event listener in the WKUserScript that
+      // CollaboraOnlineWebViewKeyboardManager injects into all iframes of the WKWebView.
 
-      const keyboardInsertText = function(text) {
-          console.log('Got insert: "' + text + '"');
+      // The app here, COKbdMgrTest, is just a test-bed for CollaboraOnlineWebViewKeyboardManager.
+      // The real (and only) other use-case for it is the JS over in Collabora Online's loleaflet
+      // directory. That will use a similar window.COKbdMgrCallback function. (Depending on in what
+      // context the keyboard is needed, slightly different functions might be assigned to
+      // window.COKbdMgrCallback.)
 
-          // When a "q" is typed we ask the embedding iOS app to hide the keyboard.
-          if (text === 'q') {
-              // Posting message to the embedding iOS app does not require any tricks through
-              // surrounding iframes but can be done directly.
-              window.webkit.messageHandlers.CollaboraOnlineWebViewKeyboardManager.postMessage('hide');
-              return;
+      // Possibly the sanity check part of this should be factored out into a separate function that
+      // would be installed in the WKUserScript that CollaboraOnlineWebViewKeyboardManager injects.
+
+      window.COKbdMgrCallback = function(message) {
+          if (typeof message !== 'object') {
+              const errorMessage = 'COKbdMgrCallback called with non-object of type ' + typeof message;
+              console.log(errorMessage);
+              throw {id: 'COKbdMgr', message: errorMessage};
           }
 
-          // Check if we have the iframe
-          var i = document.getElementById("iframe");
+          if (message.id !== 'COKbdMgr') {
+              const errorMessage = 'COKbdMgrCallback called with object with unknown id: ' + message.id;
+              console.log(errorMessage);
+              throw {id: 'COKbdMgr', message: errorMessage};
+          }
 
-          if (i) {
-              // Yes, so send a message to it
-              i.contentWindow.postMessage({command: "keyboardInsertText", text: text}, "*");
-          } else {
-              // No, so do it in this document
+          if (message.command === undefined || typeof message.command !== 'string') {
+              const errorMessage = 'COKbdMgrCallback called without command';
+              console.log(errorMessage);
+              throw {id: 'COKbdMgr', message: errorMessage};
+          }
+
+          if (message.command === 'insertText') {
+              if (message.text === undefined || typeof message.text !== 'string') {
+                  const errorMessage = 'COKbdMgrCallback called for insertText without text';
+                  console.log(errorMessage);
+                  throw {id: 'COKbdMgr', message: errorMessage};
+              }
+
+              // When a "q" is typed we ask the embedding iOS app to hide the keyboard.
+              if (message.text === 'q') {
+                  // Posting message to the embedding iOS app does not require any tricks through
+                  // surrounding iframes but can be done directly.
+                  window.webkit.messageHandlers.CollaboraOnlineWebViewKeyboardManager.postMessage('hide');
+                  return;
+              }
+
               var t = document.getElementById("editable-text");
-              t.innerHTML = t.innerHTML + text;
-          }
-      }
-
-      const keyboardDeleteBackward = function() {
-          console.log('Got deleteBackward');
-
-          // Check if we have the iframe
-          var i = document.getElementById("iframe");
-
-          if (i) {
-              i.contentWindow.postMessage({command: "keyboardDeleteBackward"}, "*");
-          } else {
+              t.innerHTML = t.innerHTML + message.text;
+          } else if (message.command === 'deleteBackward') {
               var t = document.getElementById("editable-text");
               if (t.innerHTML !== '') {
                   t.innerHTML = t.innerHTML.substring(0, t.innerHTML.length - 1);
               }
+          } else {
+              const errorMessage = 'COKbdMgrCallback called with unknown command ' + message.command;
+                  console.log(errorMessage);
+                  throw {id: 'COKbdMgr', message: errorMessage};
           }
       }
 
       const displayKeyboard = function() {
           // Sure, here in this demo app we know that we are embedded in an iOS app that uses
-          // CollaboraOnlineWebViewKeyboardManager, but check anyway.
+          // CollaboraOnlineWebViewKeyboardManager, so the below will always exist, but as an
+          // example, check anyway.
           if (window.webkit &&
               window.webkit.messageHandlers &&
               window.webkit.messageHandlers.CollaboraOnlineWebViewKeyboardManager)
@@ -93,13 +113,18 @@
           var t = document.getElementById("interaction");
           t.remove();
 
+          // Undefine the window.COKbdMgrCallback function so that the JS that
+          // CollaboraOnlineWebViewKeyboardManager executes will post a message to the iframe
+          // instead.
+          window.COKbdMgrCallback = undefined;
+
           // Instead add an explanatory paragraph.
           var p = document.createElement("p");
           p.style.fontSize = "40px";
           p.innerHTML = "Here is an iframe (depth " + (depth + 1) + "):";
           document.body.appendChild(p);
 
-          // Create the iframe
+          // Create the iframe, using this same html file.
           i = document.createElement("iframe");
           i.id = "iframe";
           i.src = document.location.href.replace(/\?depth=\d+$/, "") + "?depth=" + (depth + 1);
@@ -109,17 +134,6 @@
           i.style.background = "rgb(" + c + "," + c + "," + c + ")";
           document.body.appendChild(i);
       }
-
-      // If we are in an iframe, set up a message listener
-      if (depth > 0)
-          window.addEventListener("message",
-                                  function(event) {
-                                      if (event.data.command === "keyboardInsertText")
-                                          keyboardInsertText(event.data.text);
-                                      else if (event.data.command === "keyboardDeleteBackward")
-                                          keyboardDeleteBackward();
-                                  },
-                                  false);
     </script>
   </head>
 
