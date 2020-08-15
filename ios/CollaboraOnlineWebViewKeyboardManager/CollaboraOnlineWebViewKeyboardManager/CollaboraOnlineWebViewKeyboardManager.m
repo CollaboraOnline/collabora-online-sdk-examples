@@ -59,8 +59,12 @@
 
     [webView evaluateJavaScript:js
               completionHandler:^(id _Nullable obj, NSError *_Nullable error) {
-                if (error)
-                    NSLog(@"Error when executing '%@': %@", js, [error localizedDescription]);
+                if (error) {
+                    if (error.userInfo[@"WKJavaScriptExceptionMessage"])
+                        NSLog(@"Error when executing JavaScript: %@: %@", error.localizedDescription, error.userInfo[@"WKJavaScriptExceptionMessage"]);
+                    else
+                        NSLog(@"Error when executing JavaScript: %@", error.localizedDescription);
+                }
               }];
 }
 
