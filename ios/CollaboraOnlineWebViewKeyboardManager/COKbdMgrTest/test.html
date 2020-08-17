@@ -48,26 +48,26 @@
           if (typeof message !== 'object') {
               const errorMessage = 'COKbdMgrCallback called with non-object of type ' + typeof message;
               console.log(errorMessage);
-              throw {id: 'COKbdMgr', message: errorMessage};
+              throw errorMessage;
           }
 
           if (message.id !== 'COKbdMgr') {
               const errorMessage = 'COKbdMgrCallback called with object with unknown id: ' + message.id;
               console.log(errorMessage);
-              throw {id: 'COKbdMgr', message: errorMessage};
+              throw errorMessage;
           }
 
           if (message.command === undefined || typeof message.command !== 'string') {
               const errorMessage = 'COKbdMgrCallback called without command';
               console.log(errorMessage);
-              throw {id: 'COKbdMgr', message: errorMessage};
+              throw errorMessage;
           }
 
           if (message.command === 'insertText') {
               if (message.text === undefined || typeof message.text !== 'string') {
                   const errorMessage = 'COKbdMgrCallback called for insertText without text';
                   console.log(errorMessage);
-                  throw {id: 'COKbdMgr', message: errorMessage};
+                  throw errorMessage;
               }
 
               // When a "q" is typed we ask the embedding iOS app to hide the keyboard.
@@ -88,7 +88,7 @@
           } else {
               const errorMessage = 'COKbdMgrCallback called with unknown command ' + message.command;
                   console.log(errorMessage);
-                  throw {id: 'COKbdMgr', message: errorMessage};
+                  throw errorMessage;
           }
       }
 
