@@ -115,6 +115,9 @@
           if (i)
               return;
 
+          // Hide keyboard if we are displaying it
+          window.webkit.messageHandlers.CollaboraOnlineWebViewKeyboardManager.postMessage('hide');
+
           // Remove the interaction part from the parent page as it
           // would be too confusing to keep it, too.
           var t = document.getElementById("interaction");
