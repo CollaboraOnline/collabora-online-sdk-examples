@@ -190,6 +190,10 @@
             if (keyboardType != UIKeyboardTypeDefault)
                 control.keyboardType = keyboardType;
         }
+        // Don't auto-capitalize start of input as we have no idea about the context into which it
+        // will be added.
+        control.autocapitalizationType = UITextAutocapitalizationTypeNone;
+
         [self->webView addSubview:control];
         // NSLog(@"COKbdMgr: added _COWVKMKeyInputControl to webView");
         [control becomeFirstResponder];
