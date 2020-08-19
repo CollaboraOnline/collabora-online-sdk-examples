@@ -216,7 +216,7 @@
             NSString *text = message.body[@"text"];
             NSNumber *location = message.body[@"location"];
             [self displayKeyboardOfType:type withText:text at:(location != nil ? [location unsignedIntegerValue] : UINT_MAX)];
-        } else if ([stringCommand isEqualToString:@"display"]) {
+        } else if ([stringCommand isEqualToString:@"hide"]) {
             [self hideKeyboard];
         } else if (stringCommand == nil) {
             NSLog(@"No 'command' in %@", message.body);
