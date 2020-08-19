@@ -14,7 +14,7 @@
 
 #import <CollaboraOnlineWebViewKeyboardManager/CollaboraOnlineWebViewKeyboardManager.h>
 
-@interface _COWVKMKeyInputControl : UIControl <UIKeyInput> {
+@interface _COWVKMKeyInputControl : UITextField<UITextFieldDelegate> {
     WKWebView *webView;
 }
 
@@ -28,6 +28,7 @@
     self = [super init];
 
     self->webView = webView;
+    self.delegate = self;
 
     return self;
 }
@@ -68,12 +69,18 @@
               }];
 }
 
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
 
-- (void)insertText:(NSString *)text {
+    // NSLog(@"COKbdMgr: shouldChangeCharactersInRange({%lu, %lu}, '%@')", (unsigned long)range.location, (unsigned long)range.length, string);
+
+    // Seems that deleteBackward will be called, too, even if not documented?
+    if (range.length == 1 && string.length == 0)
+        return YES;
+
     NSMutableString *quotedText = [NSMutableString string];
 
-    for (unsigned i = 0; i < text.length; i++) {
-        const unichar c = [text characterAtIndex:i];
+    for (unsigned i = 0; i < string.length; i++) {
+        const unichar c = [string characterAtIndex:i];
         if (c == '\'' || c == '\\') {
             [quotedText appendString:@"\\"];
             [quotedText appendFormat:@"%c", c];
@@ -91,9 +98,12 @@
     [message appendString:@"'}"];
 
     [self postMessage:message];
- }
+
+    return YES;
+}
 
 - (void)deleteBackward {
+    // NSLog(@"COKbdMgr: deleteBackward()");
     [self postMessage:@"{id: 'COKbdMgr', command: 'deleteBackward'}"];
 }
 
@@ -148,6 +158,52 @@
     return self;
 }
 
+- (void)displayKeyboardType:(NSString *)type {
+    if (control == nil) {
+        control = [[_COWVKMKeyInputControl alloc] initForWebView:self->webView];
+        if (type != nil) {
+            UIKeyboardType keyboardType = UIKeyboardTypeDefault;
+            if ([type caseInsensitiveCompare:@"default"] == NSOrderedSame)
+                ;
+            else if ([type caseInsensitiveCompare:@"asciicapable"] == NSOrderedSame)
+                keyboardType = UIKeyboardTypeASCIICapable;
+            else if ([type caseInsensitiveCompare:@"numbersandpunctuation"] == NSOrderedSame)
+                keyboardType = UIKeyboardTypeNumbersAndPunctuation;
+            else if ([type caseInsensitiveCompare:@"url"] == NSOrderedSame)
+                keyboardType = UIKeyboardTypeURL;
+            else if ([type caseInsensitiveCompare:@"numberpad"] == NSOrderedSame)
+                keyboardType = UIKeyboardTypeNumberPad;
+            else if ([type caseInsensitiveCompare:@"phonepad"] == NSOrderedSame)
+                keyboardType = UIKeyboardTypePhonePad;
+            else if ([type caseInsensitiveCompare:@"namephonepad"] == NSOrderedSame)
+                keyboardType = UIKeyboardTypeNamePhonePad;
+            else if ([type caseInsensitiveCompare:@"emailaddress"] == NSOrderedSame)
+                keyboardType = UIKeyboardTypeEmailAddress;
+            else if ([type caseInsensitiveCompare:@"decimalpad"] == NSOrderedSame)
+                keyboardType = UIKeyboardTypeDecimalPad;
+            else if ([type caseInsensitiveCompare:@"asciicapablenumberpad"] == NSOrderedSame)
+                keyboardType = UIKeyboardTypeASCIICapableNumberPad;
+            else if ([type caseInsensitiveCompare:@"alphabet"] == NSOrderedSame)
+                keyboardType = UIKeyboardTypeAlphabet;
+            else
+                NSLog(@"COKbdMgr: Unrecognized keyboard type %@", type);
+            if (keyboardType != UIKeyboardTypeDefault)
+                control.keyboardType = keyboardType;
+        }
+        [self->webView addSubview:control];
+        // NSLog(@"COKbdMgr: added _COWVKMKeyInputControl to webView");
+        [control becomeFirstResponder];
+    }
+}
+
+- (void)hideKeyboard {
+    if (control != nil) {
+        [control removeFromSuperview];
+        // NSLog(@"COKbdMgr: removed _COWVKMKeyInputControl from webView");
+        control = nil;
+    }
+}
+
 - (void)userContentController:(nonnull WKUserContentController *)userContentController
       didReceiveScriptMessage:(nonnull WKScriptMessage *)message {
     if (![message.name isEqualToString:@"CollaboraOnlineWebViewKeyboardManager"]) {
@@ -155,20 +211,20 @@
         return;
     }
 
-    if ([message.body isEqualToString:@"display"]) {
-        if (control == nil) {
-            control = [[_COWVKMKeyInputControl alloc] initForWebView:self->webView];
-            [self->webView addSubview:control];
-            [control becomeFirstResponder];
-        }
-    } else if ([message.body isEqualToString:@"hide"]) {
-        if (control != nil) {
-            [control removeFromSuperview];
-            control = nil;
+    if ([message.body isKindOfClass:[NSDictionary class]]) {
+        NSString *stringCommand = message.body[@"command"];
+        if ([stringCommand isEqualToString:@"display"]) {
+            NSString *type = message.body[@"type"];
+            [self displayKeyboardType:type];
+        } else if ([stringCommand isEqualToString:@"display"]) {
+            [self hideKeyboard];
+        } else if (stringCommand == nil) {
+            NSLog(@"No 'command' in %@", message.body);
+        } else {
+            NSLog(@"Received unrecognized command:%@", stringCommand);
         }
     } else {
-        NSLog(@"Received unrecognized message body:%@", message.body);
-        return;
+        NSLog(@"Received unrecognized message body of type %@: %@, should be a dictionary (JS object)", [message.body class], message.body);
     }
 }
 

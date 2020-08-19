@@ -81,7 +81,7 @@
               if (message.text === 'q') {
                   // Posting message to the embedding iOS app does not require any tricks through
                   // surrounding iframes but can be done directly.
-                  window.webkit.messageHandlers.CollaboraOnlineWebViewKeyboardManager.postMessage('hide');
+                  window.webkit.messageHandlers.CollaboraOnlineWebViewKeyboardManager.postMessage({command: 'hide'});
                   return;
               }
 
@@ -99,14 +99,14 @@
           }
       }
 
-      const displayKeyboard = function() {
+      const displayKeyboard = function(type) {
           // Sure, here in this demo app we know that we are embedded in an iOS app that uses
           // CollaboraOnlineWebViewKeyboardManager, so the below will always exist, but as an
           // example, check anyway.
           if (window.webkit &&
               window.webkit.messageHandlers &&
               window.webkit.messageHandlers.CollaboraOnlineWebViewKeyboardManager)
-              window.webkit.messageHandlers.CollaboraOnlineWebViewKeyboardManager.postMessage('display');
+              window.webkit.messageHandlers.CollaboraOnlineWebViewKeyboardManager.postMessage({command: 'display', type: type});
       }
 
       const addIframe = function() {
@@ -116,7 +116,7 @@
               return;
 
           // Hide keyboard if we are displaying it
-          window.webkit.messageHandlers.CollaboraOnlineWebViewKeyboardManager.postMessage('hide');
+          window.webkit.messageHandlers.CollaboraOnlineWebViewKeyboardManager.postMessage({command: 'hide'});
 
           // Remove the interaction part from the parent page as it
           // would be too confusing to keep it, too.
@@ -155,7 +155,16 @@
                style="font-size:40px;"
                value="here"
                onclick="displayKeyboard();">
-        to display keyboard. (Type a Q or tap somewhere in the page to hide it again.)
+        to display default style keyboard. (Type a Q or tap somewhere in the page to hide it again.)
+      </p>
+      <p style="font-size:40px;">
+        Click
+        <input type="button"
+               style="font-size:40px;"
+               value="here"
+               onclick="displayKeyboard('decimalPad');">
+        to display numeric keypad.
+
       </p>
       <p id="editable-text" style="font-size:40px;">
         The text you type is inserted after this. You can backspace
