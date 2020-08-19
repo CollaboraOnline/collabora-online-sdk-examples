@@ -14,7 +14,7 @@
 
 #import <CollaboraOnlineWebViewKeyboardManager/CollaboraOnlineWebViewKeyboardManager.h>
 
-@interface _COWVKMKeyInputControl : UITextField<UITextFieldDelegate> {
+@interface _COWVKMKeyInputControl : UITextView<UITextViewDelegate> {
     WKWebView *webView;
 }
 
@@ -69,18 +69,14 @@
               }];
 }
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-
-    // NSLog(@"COKbdMgr: shouldChangeCharactersInRange({%lu, %lu}, '%@')", (unsigned long)range.location, (unsigned long)range.length, string);
-
-    // Seems that deleteBackward will be called, too, even if not documented?
-    if (range.length == 1 && string.length == 0)
-        return YES;
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    NSLog(@"COKbdMgr: shouldChangeTextInRange({%lu, %lu}, '%@')", (unsigned long)range.location, (unsigned long)range.length, text);
+    NSLog(@"self.text is now length %lu '%@'", self.text.length, self.text);
 
     NSMutableString *quotedText = [NSMutableString string];
 
-    for (unsigned i = 0; i < string.length; i++) {
-        const unichar c = [string characterAtIndex:i];
+    for (unsigned i = 0; i < text.length; i++) {
+        const unichar c = [text characterAtIndex:i];
         if (c == '\'' || c == '\\') {
             [quotedText appendString:@"\\"];
             [quotedText appendFormat:@"%c", c];
@@ -93,18 +89,13 @@
 
     NSMutableString *message = [NSMutableString string];
 
-    [message appendString:@"{id: 'COKbdMgr', command: 'insertText', text: '"];
+    [message appendFormat:@"{id: 'COKbdMgr', command: 'replaceText', location: %lu, length: %lu, text: '", range.location, range.length];
     [message appendString:quotedText];
     [message appendString:@"'}"];
 
     [self postMessage:message];
 
     return YES;
-}
-
-- (void)deleteBackward {
-    // NSLog(@"COKbdMgr: deleteBackward()");
-    [self postMessage:@"{id: 'COKbdMgr', command: 'deleteBackward'}"];
 }
 
 - (BOOL)canBecomeFirstResponder {
@@ -158,7 +149,7 @@
     return self;
 }
 
-- (void)displayKeyboardType:(NSString *)type {
+- (void)displayKeyboardOfType:(NSString *)type withText:(NSString *)text at:(NSUInteger)location {
     if (control == nil) {
         control = [[_COWVKMKeyInputControl alloc] initForWebView:self->webView];
         if (type != nil) {
@@ -194,6 +185,9 @@
         // will be added.
         control.autocapitalizationType = UITextAutocapitalizationTypeNone;
 
+        control.text = text;
+        control.selectedRange = NSMakeRange(location, 0);
+
         [self->webView addSubview:control];
         // NSLog(@"COKbdMgr: added _COWVKMKeyInputControl to webView");
         [control becomeFirstResponder];
@@ -219,7 +213,9 @@
         NSString *stringCommand = message.body[@"command"];
         if ([stringCommand isEqualToString:@"display"]) {
             NSString *type = message.body[@"type"];
-            [self displayKeyboardType:type];
+            NSString *text = message.body[@"text"];
+            NSNumber *location = message.body[@"location"];
+            [self displayKeyboardOfType:type withText:text at:(location != nil ? [location unsignedIntegerValue] : UINT_MAX)];
         } else if ([stringCommand isEqualToString:@"display"]) {
             [self hideKeyboard];
         } else if (stringCommand == nil) {
