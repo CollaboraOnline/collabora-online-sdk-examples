@@ -70,8 +70,8 @@
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    NSLog(@"COKbdMgr: shouldChangeTextInRange({%lu, %lu}, '%@')", (unsigned long)range.location, (unsigned long)range.length, text);
-    NSLog(@"self.text is now length %lu '%@'", self.text.length, self.text);
+    NSLog(@"COKbdMgr: shouldChange({%lu, %lu}, '%@'), self.text is length %lu '%@'",
+          (unsigned long)range.location, (unsigned long)range.length, text, self.text.length, self.text);
 
     NSMutableString *quotedText = [NSMutableString string];
 
@@ -96,6 +96,10 @@
     [self postMessage:message];
 
     return YES;
+}
+
+- (void)textViewDidChange:(UITextView *)textView {
+    NSLog(@"COKbdMgr: didChange: self.text is now length %lu '%@'", self.text.length, self.text);
 }
 
 - (BOOL)canBecomeFirstResponder {
