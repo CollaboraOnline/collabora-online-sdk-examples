@@ -16,6 +16,7 @@
 
 @interface _COWVKMKeyInputControl : UITextView<UITextViewDelegate> {
     WKWebView *webView;
+    BOOL lastWasNewline;
 }
 
 - (instancetype)initForWebView:(nonnull WKWebView *)webView;
@@ -28,6 +29,7 @@
     self = [super init];
 
     self->webView = webView;
+    self->lastWasNewline = NO;
     self.delegate = self;
 
     return self;
@@ -95,11 +97,21 @@
 
     [self postMessage:message];
 
+    self->lastWasNewline = (range.length == 0 && [text isEqualToString:@"\n"]);
+
     return YES;
 }
 
 - (void)textViewDidChange:(UITextView *)textView {
     NSLog(@"COKbdMgr: didChange: self.text is now length %lu '%@'", self.text.length, self.text);
+
+    // Hack to match the logic in loleaflet's manipulation of the _textArea.value in TextInput.js.
+    // Probably means that the local testbed here (COKbdMgrTest's test.html) doesn't necessarily
+    // handle adding newlines properly. Oh well.
+    if (self->lastWasNewline) {
+        self.text = @"";
+        NSLog(@"          Made self.text empty to match TextInput.js");
+    }
 }
 
 - (BOOL)canBecomeFirstResponder {
