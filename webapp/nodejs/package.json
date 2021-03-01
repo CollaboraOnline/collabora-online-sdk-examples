@@ -1,0 +1,27 @@
+{
+  "name": "CollaboraOnlineIntegrationExample",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Collabora Online Integration Example",
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "morgan": "~1.9.1",
+    "xmldom": "^0.4.0",
+    "xpath": "0.0.32"
+  },
+  "bugs": {
+    "url": "https://github.com/CollaboraOnline/collabora-online-sdk-examples/issues"
+  },
+  "homepage": "https://github.com/CollaboraOnline/collabora-online-sdk-examples/webapp/nodejs",
+  "license": "Apache",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CollaboraOnline/collabora-online-sdk-examples.git"
+  }
+}
