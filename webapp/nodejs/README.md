@@ -14,11 +14,20 @@ We assume you are familiar with npm and the node.js framework.
    then click on the `Load Collabora Online` button.
 5. An instance of Collabora Online should appear into an iframe embedded in the same page, 
    showing a text document loaded with content a simple `Hello world!` text line.
-6. Try to type in some more text ( e.g. `Hi!`) and then perform a `Save` action. In the console you should get the following output:
+6. Try to type in some more text ( e.g. `Hi!`) and then perform a `Save` action. 
+   In the console you should get the following output:
    * `wopi PutFile endpoint`  - the PutFile wopi endpoint has been triggered
    * ` Hello World! Hi!` - the updated file content has been successfully received
     
+## Note
+
+By default the [body-parser][] node.js package used as middleware for the `PutFile` endpoint has a limit option which 
+controls the maximum request body size whose default is 100kb. 
+In case you want to use this package in production code, you should increase that limit accordingly to your needs.
+
+
 ---
 
 [npm]: https://www.npmjs.com/get-npm
 [nodejs]: https://nodejs.org/
+[body-parser]: https://github.com/expressjs/body-parser

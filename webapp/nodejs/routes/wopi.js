@@ -24,7 +24,7 @@ router.get('/files/:fileId', function(req, res) {
 });
 
 /* *
- * wopi GetFile endpoint
+ *  wopi GetFile endpoint
  *
  *  Given a request access token and a document id, sends back the contents of the file.
  *  The GetFile wopi endpoint is triggered by a request with a GET verb at
@@ -40,7 +40,7 @@ router.get('/files/:fileId/contents', function(req, res) {
 });
 
 /* *
- * wopi PutFile endpoint
+ *  wopi PutFile endpoint
  *
  *  Given a request access token and a document id, replaces the files with the POST request body.
  *  The PutFile wopi endpoint is triggered by a request with a POST verb at
@@ -59,6 +59,5 @@ router.post('/files/:fileId/contents', function(req, res) {
 		res.sendStatus(404);
 	}
 });
-
 
 module.exports = router;
