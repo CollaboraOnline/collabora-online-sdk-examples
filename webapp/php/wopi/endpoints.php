@@ -53,7 +53,7 @@
      *  The response has to be in JSON format and at a minimum it needs to include
      *  the file name and the file size.
      *  The CheckFileInfo wopi endpoint is triggered by a GET request at
-     *  https://HOSTNAME/example_php/wopi/<document_id>
+     *  https://HOSTNAME/example_php/wopi/files/<document_id>
      */
     function wopiCheckFileInfo($documentId) {
         // test.txt is just a fake text file
@@ -74,7 +74,7 @@
     /* *
      *  Given a request access token and a document id, sends back the contents of the file.
      *  The GetFile wopi endpoint is triggered by a request with a GET verb at
-     *  https://HOSTNAME/example_php/wopi/<document_id>/contents
+     *  https://HOSTNAME/example_php/wopi/files/<document_id>/contents
      */
     function wopiGetFile($documentId) {
         // we just return the content of a fake text file
@@ -88,7 +88,7 @@
     /**
      *  Given a request access token and a document id, replaces the files with the POST request body.
      *  The PutFile wopi endpoint is triggered by a request with a POST verb at
-     *  https://HOSTNAME/example_php/wopi/<document_id>/contents
+     *  https://HOSTNAME/example_php/wopi/files/<document_id>/contents
      */
     function wopiPutFile($documentId) {
         // we log to the apache error log file so that is possible
