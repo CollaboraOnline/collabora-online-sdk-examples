@@ -19,8 +19,17 @@ and that the PHP module for Apache has been installed too and loaded.
    
 ## Run the example
 
-1. Start your browser and make it point to the url `http://localhost/example_php` 
-   (in case you enabled SSL support for Apache, you should use `https` in place of `http`).
+1. Start your browser and make it point to the url `http://<host>/example_php`
+
+   To make it reachable by the Collabora Online server you need to use as `<host>` the IP address of the machine where the Apache
+   instance is running. In case the Apache server can't be reached you could also need to open the port for the http service on the firewall.
+
+   When both the Collabora Online server and the Apache server belong to the same LAN `<host>` should be a local IP address.
+   
+   In case the Collabora Online server is on a remote host on the internet, `<host>` must be the public IP address of
+   the machine where the Apache server is running.
+   
+   In case you enabled SSL support for Apache, you should use `https` in place of `http`.
 2. In the form text field enter the address for your Collabora Online server including the protocol scheme, 
    then click on the `Load Collabora Online` button.
 3. An instance of Collabora Online should appear into an iframe embedded in the same page, 

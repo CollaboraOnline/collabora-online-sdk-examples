@@ -101,9 +101,7 @@ $errorCode = main();
 
 <script type="text/ecmascript">
     function loadDocument() {
-        var SCHEME = "<?php echo $_HOST_SCHEME; ?>"
-        var HOSTNAME = 'localhost';
-        var wopiSrc = SCHEME + '://' + HOSTNAME + '/example_php/wopi/files/1';
+        var wopiSrc = window.location.origin + '/example_php/wopi/files/1';
 
         var wopiClientUrl = "<?php echo $_WOPI_SRC; ?>";
         if (!wopiClientUrl) {
