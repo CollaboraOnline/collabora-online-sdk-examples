@@ -8,7 +8,7 @@ var router = express.Router();
  *  The response has to be in JSON format and at a minimum it needs to include
  *  the file name and the file size.
  *  The CheckFileInfo wopi endpoint is triggered by a GET request at
- *  https://HOSTNAME/wopi/<document_id>
+ *  https://HOSTNAME/wopi/files/<document_id>
  */
 router.get('/files/:fileId', function(req, res) {
 	console.log('file id: ' + req.params.fileId);
@@ -28,7 +28,7 @@ router.get('/files/:fileId', function(req, res) {
  *
  *  Given a request access token and a document id, sends back the contents of the file.
  *  The GetFile wopi endpoint is triggered by a request with a GET verb at
- *  https://HOSTNAME/wopi/<document_id>/contents
+ *  https://HOSTNAME/wopi/files/<document_id>/contents
  */
 router.get('/files/:fileId/contents', function(req, res) {
 	// we just return the content of a fake text file
@@ -44,7 +44,7 @@ router.get('/files/:fileId/contents', function(req, res) {
  *
  *  Given a request access token and a document id, replaces the files with the POST request body.
  *  The PutFile wopi endpoint is triggered by a request with a POST verb at
- *  https://HOSTNAME/wopi/<document_id>/contents
+ *  https://HOSTNAME/wopi/files/<document_id>/contents
  */
 router.post('/files/:fileId/contents', function(req, res) {
 	// we log to the console so that is possible
