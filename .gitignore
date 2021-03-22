@@ -2,4 +2,10 @@
 
 /webapp/nodejs/node_modules
 /webapp/nodejs/package-lock.json
+/webapp/reactjs/node_modules
+/webapp/reactjs/package-lock.json
+/webapp/reactjs/client/node_modules
+/webapp/reactjs/client/package-lock.json
+
+
 __pycache__
