@@ -32,5 +32,29 @@ namespace WebApplication1.Controllers
             var fileContent = "Hello World";
             return base.Content(fileContent);
         }
+
+        [HttpPost("/wopi/files/{fileId}/contents")]
+        // This endpoint allows for the files to save to the collabora space. This SDK example outputs in the console, or something 
+        //  {need to find this}, the body text put bellow then returns the status code 200; meaning it was a success but only if the 
+        //  body has something in, from being edited. Else it returns a failure code of 404.  
+        public IActionResult PutFile()
+        {
+            using (StreamReader stream = new StreamReader(HttpContext.Request.Body))
+            {
+                string body = stream.ReadToEndAsync().ToString();
+                body = "param=somevalue&param2=someothervalue";
+
+                if (body != null)
+                {
+                    System.Diagnostics.Debug.WriteLine(body);
+                    return StatusCode(200);
+                }
+                else
+                {
+                    return StatusCode(404);
+                }
+            }
+        }
+
     }
 }
