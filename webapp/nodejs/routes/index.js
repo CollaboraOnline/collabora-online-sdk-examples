@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var http = require('http');
 var https = require('https');
-var Dom = require('xmldom').DOMParser;
+var Dom = require('@xmldom/xmldom').DOMParser;
 var xpath = require('xpath');
 
 
