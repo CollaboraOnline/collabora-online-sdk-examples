@@ -1,9 +1,11 @@
-var express = require('express');
-var router = express.Router();
-var http = require('http');
-var https = require('https');
-var Dom = require('@xmldom/xmldom').DOMParser;
-var xpath = require('xpath');
+'use strict';
+
+let express = require('express');
+let router = express.Router();
+let http = require('http');
+let https = require('https');
+let Dom = require('@xmldom/xmldom').DOMParser;
+let xpath = require('xpath');
 
 
 router.get('/', function(req, res) {
@@ -11,42 +13,41 @@ router.get('/', function(req, res) {
 });
 
 router.get('/collaboraUrl', function(req, res) {
-    var collaboraOnlineHost = req.query.server;
-    var httpClient = collaboraOnlineHost.startsWith('https') ? https : http;
-    var data = '';
-    var request = httpClient.get(collaboraOnlineHost + '/hosting/discovery', function(response) {
+    let collaboraOnlineHost = req.query.server;
+    let httpClient = collaboraOnlineHost.startsWith('https') ? https : http;
+    let data = '';
+    let request = httpClient.get(collaboraOnlineHost + '/hosting/discovery', function(response) {
         response.on('data', function(chunk) { data += chunk.toString(); });
         response.on('end', function() {
-            var err;
             if (response.statusCode !== 200) {
-                err = 'Request failed. Satus Code: ' + response.statusCode;
+                let err = 'Request failed. Satus Code: ' + response.statusCode;
                 response.resume();
                 res.status(response.statusCode).send(err);
                 console.log(err)
                 return;
             }
             if (!response.complete) {
-                err = 'No able to retrieve the discovery.xml file from the Collabora Online server with the submitted address.';
+                let err = 'No able to retrieve the discovery.xml file from the Collabora Online server with the submitted address.';
                 res.status(404).send(err);
                 console.log(err);
                 return;
             }
-            var doc = new Dom().parseFromString(data);
+            let doc = new Dom().parseFromString(data);
             if (!doc) {
-                err = 'The retrieved discovery.xml file is not a valid XML file'
+                let err = 'The retrieved discovery.xml file is not a valid XML file'
                 res.status(404).send(err)
                 console.log(err);
                 return;
             }
-            var mimeType = 'text/plain';
-            var nodes = xpath.select("/wopi-discovery/net-zone/app[@name='" + mimeType + "']/action", doc);
+            let mimeType = 'text/plain';
+            let nodes = xpath.select("/wopi-discovery/net-zone/app[@name='" + mimeType + "']/action", doc);
             if (!nodes || nodes.length !== 1) {
-                err = 'The requested mime type is not handled'
+                let err = 'The requested mime type is not handled'
                 res.status(404).send(err);
                 console.log(err);
                 return;
             }
-            var onlineUrl = nodes[0].getAttribute('urlsrc');
+            let onlineUrl = nodes[0].getAttribute('urlsrc');
             res.json({
                 url: onlineUrl,
                 token: 'test'
