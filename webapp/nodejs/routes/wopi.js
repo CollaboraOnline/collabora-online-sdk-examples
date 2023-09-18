@@ -1,5 +1,7 @@
-var express = require('express');
-var router = express.Router();
+'use strict';
+
+let express = require('express');
+let router = express.Router();
 
 /* *
  *  wopi CheckFileInfo endpoint
@@ -35,7 +37,7 @@ router.get('/files/:fileId/contents', function(req, res) {
 	// in a real case you should use the file id
 	// for retrieving the file from the storage and
 	// send back the file content as response
-	var fileContent = 'Hello world!';
+	const fileContent = 'Hello world!';
 	res.send(fileContent);
 });
 

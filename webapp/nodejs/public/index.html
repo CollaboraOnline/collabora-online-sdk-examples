@@ -27,12 +27,12 @@
 
 <script type="text/javascript">
 
-var locationOrigin = window.location.origin;
-var scheme = locationOrigin.startsWith('https') ? 'https' : 'http';
+let locationOrigin = window.location.origin;
+let scheme = locationOrigin.startsWith('https') ? 'https' : 'http';
 
 $("#collabora-online-server-form").submit(function(event) {
   event.preventDefault();
-  var wopiClientHost = $("#collabora-online-server").val();
+  let wopiClientHost = $("#collabora-online-server").val();
   if (!wopiClientHost) {
     alert('No server address entered');
     return;
@@ -45,18 +45,18 @@ $("#collabora-online-server-form").submit(function(event) {
     alert('Collabora Online server address scheme does not match the current page url scheme');
     return;
   }
-  var wopiSrc = locationOrigin + '/wopi/files/1';
+  let wopiSrc = locationOrigin + '/wopi/files/1';
   $.getJSON("/collaboraUrl?server=" + wopiClientHost)
     .done(function( resp ) {
-      var wopiClientUrl = resp['url'];
-      var accessToken =  resp['token'];
-      var wopiUrl = wopiClientUrl + 'WOPISrc=' + wopiSrc;
+      let wopiClientUrl = resp['url'];
+      let accessToken =  resp['token'];
+      let wopiUrl = wopiClientUrl + 'WOPISrc=' + wopiSrc;
       $('#collabora-submit-form').attr('action', wopiUrl)
       $('#access-token').attr('value', accessToken);
       $('#collabora-submit-form').submit();
     })
     .fail(function( jqxhr, textStatus, error ) {
-      var err = textStatus + ", " + error;
+      let err = textStatus + ", " + error;
       console.log( "Request Failed: " + err );
       alert('Not possible to retrieve the complete Collabora Online url');
     });
