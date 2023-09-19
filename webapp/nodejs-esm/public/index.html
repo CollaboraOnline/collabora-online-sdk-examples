@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -7,18 +7,50 @@
 </head>
 
 <body>
+  <p>
+    Select the edition of Collabora Online you are integrating to
+    output default values to <a href="https://sdk.collaboraonline.com/docs/theming.html">customise the theme</a>.
+  </p>
+  <p>
+    For the CODE edition, please refer to
+    the <a href="https://github.com/CollaboraOnline/online/blob/master/browser/css/color-palette.css">color
+    palette</a> or
+    the <a href="https://github.com/CollaboraOnline/online/blob/master/browser/css/color-palette-dark.css">dark
+      color palette</a> for the variables you can set.
+  </p>
+  <p>
+    The syntax for the variables is:
+  </p>
+  <p>
+    <tt>variable</tt> <tt>=</tt> <tt>value</tt> <tt>;</tt>
+  </p>
+  <p>
+     For your convenience this demo show them line by line.
+  </p>
+  <button id="branded-btn">Branded</button><button id="code-btn">CODE</button>
 <form action="" method="get" target="" id="collabora-online-server-form">
   <label for="collabora-online-server">Collabora Online Server</label>
   <input type="text" id="collabora-online-server" name="collabora-online-server" />
   <input type="submit" name="submit" value="Load Collabora Online" />
+  <br />
+  <label for="css-customization">CSS styling</label>
+  <br />
+  <textarea type="text" id="css-customization" name="css_variables" rows="10" cols="80">
+  </textarea>
 </form>
 
 <div style="display: none">
   <form action="" enctype="multipart/form-data" method="post" target="collabora-online-viewer" id="collabora-submit-form">
+    <input name="css_variables" value="" type="hidden" id="css-variables"/>
     <input name="access_token" value="" type="hidden" id="access-token"/>
     <input type="submit" value="" />
   </form>
 </div>
+
+<p>The value of the <tt>css_variables</tt> URL query parameter as sent
+in the GET request.</p>
+<pre id="css-variables-preview">
+</pre>
 
 <iframe id="collabora-online-viewer" name="collabora-online-viewer" style="width:90%;height:90%;position:absolute;">
 </iframe>
@@ -26,6 +58,26 @@
 <script type="text/javascript" src="javascripts/jquery-3.5.1.js"></script>
 
 <script type="text/javascript">
+
+$("#branded-btn").on("click", function() {
+  $("#css-customization").val(`--co-primary-element=#4c566a;
+--co-primary-element-light=#706aab;
+--co-txt-accent=#2e1a47;
+--co-primary-text=#ffffff;
+--co-border-radius=3px;
+--co-body-bg=#ffffff;
+--co-color-main-text=#000000;`);
+});
+$("#branded-btn").form = null
+
+$("#code-btn").on("click", function() {
+  $("#css-customization").val(`--color-primary-text=#0ff;
+--color-background-document=#ff0;
+--color-main-background=#0f0;
+--color-border=#00f;
+--color-main-text=#f00;
+`);
+});
 
 let locationOrigin = window.location.origin;
 let scheme = locationOrigin.startsWith('https') ? 'https' : 'http';
@@ -45,6 +97,10 @@ $("#collabora-online-server-form").submit(function(event) {
     alert('Collabora Online server address scheme does not match the current page url scheme');
     return;
   }
+  let cssValues = $("#css-customization").val().split('\n').join('');
+
+  $("#css-variables-preview").text(`${encodeURIComponent(cssValues)}`);
+
   let wopiSrc = locationOrigin + '/wopi/files/1';
   $.getJSON("/collaboraUrl?server=" + wopiClientHost)
     .done(function( resp ) {
@@ -52,6 +108,7 @@ $("#collabora-online-server-form").submit(function(event) {
       let accessToken =  resp['token'];
       let wopiUrl = wopiClientUrl + 'WOPISrc=' + wopiSrc;
       $('#collabora-submit-form').attr('action', wopiUrl)
+      $('#css-variables').attr('value', cssValues);
       $('#access-token').attr('value', accessToken);
       $('#collabora-submit-form').submit();
     })
