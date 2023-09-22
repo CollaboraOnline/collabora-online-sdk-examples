@@ -1,15 +1,34 @@
 #!/usr/bin/env node
 
+
 import app from '../app.js';
 import debug from 'debug';
 debug('untitled:server');
+import fs from "fs";
 import http from 'http';
+import https from 'https';
+import {env} from 'process';
 
 let port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-let server = http.createServer(app);
+let server;
+let proto;
 
+let hasCerts = env["SSL_KEY_FILE"] && env["SSL_CRT_FILE"];
+if (hasCerts) {
+  let privateKey = fs.readFileSync(env["SSL_KEY_FILE"]);
+  let certificate = fs.readFileSync(env["SSL_CRT_FILE"]);
+
+  server = https.createServer({
+    key: privateKey,
+    cert: certificate
+  }, app);
+  proto = 'https';
+} else {
+  server = http.createServer(app);
+  proto = 'http';
+}
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
@@ -61,6 +80,6 @@ function onListening() {
   let addr = server.address();
   let bind = typeof addr === 'string'
     ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+    : `${proto}://localhost:${addr.port}/`;
+  console.log(`Listening on ${bind}`);
 }
