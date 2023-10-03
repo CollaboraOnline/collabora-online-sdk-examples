@@ -37,19 +37,37 @@
   <br />
   <textarea type="text" id="css-customization" name="css_variables" rows="10" cols="80">
   </textarea>
+  <br />
+  <label for="ui-style">Select the UI mode:</label>
+  <select name="ui-mode" id="ui-mode">
+    <option value="">Default</option>
+    <option value="compact">Classic</option>
+    <option value="tabbed">Tabbed</option>
+  </select>
+  <label for="ui-theme">Select the UI theme:</label>
+  <select name="ui-theme" id="ui-theme">
+    <option value="">Default</option>
+    <option value="dark">Dark</option>
+    <option value="light">Light</option>
+  </select>
 </form>
 
 <div style="display: none">
   <form action="" enctype="multipart/form-data" method="post" target="collabora-online-viewer" id="collabora-submit-form">
     <input name="css_variables" value="" type="hidden" id="css-variables"/>
+    <input name="ui_defaults" value="" type="hidden" id="ui-defaults"/>
     <input name="access_token" value="" type="hidden" id="access-token"/>
     <input type="submit" value="" />
   </form>
 </div>
 
 <p>The value of the <tt>css_variables</tt> URL query parameter as sent
-in the GET request.</p>
+in a GET request:</p>
 <pre id="css-variables-preview">
+</pre>
+<p>The value of the <tt>ui_defaults</tt> URL query parameter as sent
+in the GET request:</p>
+<pre id="ui-defaults-preview">
 </pre>
 
 <iframe id="collabora-online-viewer" name="collabora-online-viewer" style="width:90%;height:90%;position:absolute;">
@@ -97,9 +115,19 @@ $("#collabora-online-server-form").submit(function(event) {
     alert('Collabora Online server address scheme does not match the current page url scheme');
     return;
   }
-  let cssValues = $("#css-customization").val().split('\n').join('');
+  let cssValues = $("#css-customization").val().split('\n').join('').trim();
+  let uiDefaults = ""
+  let uiMode = $("#ui-mode").val();
+  if (uiMode) {
+    uiDefaults += `UIMode=${uiMode};`;
+  }
+  let uiTheme = $("#ui-theme").val();
+  if (uiTheme) {
+    uiDefaults += `UITheme=${uiTheme};`;
+  }
 
   $("#css-variables-preview").text(`${encodeURIComponent(cssValues)}`);
+  $("#ui-defaults-preview").text(`${encodeURIComponent(uiDefaults)}`);
 
   let wopiSrc = locationOrigin + '/wopi/files/1';
   $.getJSON("/collaboraUrl?server=" + wopiClientHost)
@@ -109,6 +137,9 @@ $("#collabora-online-server-form").submit(function(event) {
       let wopiUrl = wopiClientUrl + 'WOPISrc=' + wopiSrc;
       $('#collabora-submit-form').attr('action', wopiUrl)
       $('#css-variables').attr('value', cssValues);
+      if (uiDefaults) {
+        $('#ui-defaults').attr('value', uiDefaults);
+      }
       $('#access-token').attr('value', accessToken);
       $('#collabora-submit-form').submit();
     })
