@@ -18,7 +18,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.raw({limit: maxDocumentSize}));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../html')));
 
 app.use('/', indexRouter);
 app.use('/wopi', wopiRouter);
