@@ -17,7 +17,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.raw({limit: maxDocumentSize}));
-let static_dir = new URL('public', import.meta.url);
+let static_dir = new URL('../html', import.meta.url);
 app.use(express.static(static_dir.pathname));
 
 app.use('/', indexRouter);
