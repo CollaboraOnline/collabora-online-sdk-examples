@@ -12,8 +12,8 @@ The former is placed under the root project folder, the latter in the `client` s
 The ReactJS front-end has its own development server, running by default on port 3000 
 and forwarding api request to the Express server listening by default on port 3001.
 
-1. In order to install dependencies for the Express app run `npm intall` in the project folder.
-2. In order to install dependencies for the ReactJS app run `npm intall` in the `client` sub-folder.
+1. In order to install dependencies for the Express app run `npm install` in the project folder.
+2. In order to install dependencies for the ReactJS app run `npm install` in the `client` sub-folder.
 3. In the console run the `npm start` command in the project folder for starting the Express server.
 4. Open a second shell and from the `client` sub-folder run `HOST=<host> npm start` for starting the ReactJS dev server.
    Where `<host>` is the ip address or the host name of your machine.
