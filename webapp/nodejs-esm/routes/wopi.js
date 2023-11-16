@@ -21,7 +21,8 @@ router.get('/files/:fileId', (req, res) => {
 		BaseFileName: 'test.txt',
 		Size: 11,
 		UserId: 1,
-		UserCanWrite: true
+		UserCanWrite: true,
+		EnableInsertRemoteImage: true,
 	});
 });
 
