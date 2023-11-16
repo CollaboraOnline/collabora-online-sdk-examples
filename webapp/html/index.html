@@ -7,6 +7,8 @@
 </head>
 
 <body>
+  <script src="javascripts/wopi.js"></script>
+
   <p>
     Select the edition of Collabora Online you are integrating to
     output default values to <a href="https://sdk.collaboraonline.com/docs/theming.html">customise the theme</a>.
@@ -69,6 +71,23 @@ in a GET request:</p>
 in the GET request:</p>
 <pre id="ui-defaults-preview">
 </pre>
+
+<form id="graphic-selection">
+  <fieldset>
+    <legend>Image to insert:</legend>
+    <p>Click insert remote image in Collabora Online</p>
+    <input type="radio" id="graphic-one" name="graphic" onclick="select_graphics(0)" checked />
+    <label for="graphic-one">One</label><img src="/images/one.png" width=16 height=16>
+    <br/>
+    <input type="radio" id="graphic-two" name="graphic" onclick="select_graphics(1)" />
+    <label for="graphic-two">Two</label><img src="/images/two.png" width=16 height=16>
+    <br/>
+    <input type="radio" id="graphic-remote" name="graphic" onclick="select_remote_graphic(document.querySelector('#graphic-url').value)" />
+    <label for="graphic-remote">Image URL:</label>
+    <input type="text" id="graphic-url"/>
+  </fieldset>
+</form>
+
 
 <iframe id="collabora-online-viewer" name="collabora-online-viewer" style="width:90%;height:90%;position:absolute;">
 </iframe>
