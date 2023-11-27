@@ -9,49 +9,117 @@
 <body>
   <script src="javascripts/wopi.js"></script>
 
-  <p>
-    Select the edition of Collabora Online you are integrating to
-    output default values to <a href="https://sdk.collaboraonline.com/docs/theming.html">customise the theme</a>.
-  </p>
-  <p>
-    For the CODE edition, please refer to
-    the <a href="https://github.com/CollaboraOnline/online/blob/master/browser/css/color-palette.css">color
-    palette</a> or
-    the <a href="https://github.com/CollaboraOnline/online/blob/master/browser/css/color-palette-dark.css">dark
-      color palette</a> for the variables you can set.
-  </p>
-  <p>
-    The syntax for the variables is:
-  </p>
-  <p>
-    <tt>variable</tt> <tt>=</tt> <tt>value</tt> <tt>;</tt>
-  </p>
-  <p>
-     For your convenience this demo show them line by line.
-  </p>
-  <button id="branded-btn">Branded</button><button id="code-btn">CODE</button>
-<form action="" method="get" target="" id="collabora-online-server-form">
-  <label for="collabora-online-server">Collabora Online Server</label>
-  <input type="text" id="collabora-online-server" name="collabora-online-server" />
-  <input type="submit" name="submit" value="Load Collabora Online" />
-  <br />
-  <label for="css-customization">CSS styling</label>
-  <br />
-  <textarea type="text" id="css-customization" name="css_variables" rows="10" cols="80">
-  </textarea>
-  <br />
-  <label for="ui-style">Select the UI mode:</label>
-  <select name="ui-mode" id="ui-mode">
-    <option value="">Default</option>
-    <option value="compact">Classic</option>
-    <option value="tabbed">Tabbed</option>
-  </select>
-  <label for="ui-theme">Select the UI theme:</label>
-  <select name="ui-theme" id="ui-theme">
-    <option value="">Default</option>
-    <option value="dark">Dark</option>
-    <option value="light">Light</option>
-  </select>
+  <div class="vbox">
+  <form action="" method="get" target="" id="collabora-online-server-form">
+    <div class="vbox">
+      <div>
+        <label for="collabora-online-server"><b>Collabora Online Server</b></label>
+        <input type="text" id="collabora-online-server" name="collabora-online-server" />
+        <input type="submit" name="submit" value="Load Collabora Online" />
+      </div>
+      <div class="vbox framed">
+        <div class="hbox">
+          <div>
+            <label for="css-customization"><b>CSS styling</b></label>
+            <br />
+            <textarea type="text" id="css-customization" name="css_variables" rows="10" cols="80">
+            </textarea>
+          </div>
+          <div>
+            <p>
+              Select the edition of Collabora Online you are integrating to
+              output default values
+              to <a href="https://sdk.collaboraonline.com/docs/theming.html">customise
+                the theme</a>.
+            </p>
+            <div class="hbox">
+              <button id="branded-btn">Branded</button><button id="code-btn">CODE</button>
+            </div>
+            <p>
+              For the CODE edition, please refer to
+              the <a href="https://github.com/CollaboraOnline/online/blob/master/browser/css/color-palette.css">color
+                palette</a> or
+              the <a href="https://github.com/CollaboraOnline/online/blob/master/browser/css/color-palette-dark.css">dark
+                color palette</a> for the variables you can set.
+            </p>
+            <p>
+              The syntax for the variables is:
+            </p>
+            <p>
+              <tt>variable</tt> <tt>=</tt> <tt>value</tt> <tt>;</tt>
+            </p>
+            <p>
+              For your convenience this demo show them line by line.
+            </p>
+          </div>
+        </div>
+        <div>
+          <p>The value of the <tt>css_variables</tt> URL query parameter as sent
+            in a GET request:</p>
+          <pre id="css-variables-preview" class="framed">
+          </pre>
+        </div>
+      </div>
+      <div class="vbox framed">
+        <div class="grid">
+          <div>
+            <label for="ui-style">Select the UI mode:</label>
+            <select name="ui-mode" id="ui-mode">
+              <option value="">Default</option>
+              <option value="compact">Classic</option>
+              <option value="tabbed">Tabbed</option>
+            </select>
+          </div>
+          <div>
+            <label for="ui-theme">Select the UI theme:</label>
+            <select name="ui-theme" id="ui-theme">
+              <option value="">Default</option>
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+            </select>
+          </div>
+          <div>
+            <label for="saved-ui-state">Use saved UI State:</label>
+            <input type="checkbox" id="saved-ui-state" name="saved-ui-state" checked />
+          </div>
+          <div>
+            <label for="show-sidebar">Show sidebar (writer):</label>
+            <input type="checkbox" id="show-sidebar" name="show-sidebar" checked />
+          </div>
+          <div>
+            <label for="hide-toolbar">Hide toolbar:</label>
+            <input type="checkbox" id="hide-toolbar" name="hide-toolbar" />
+          </div>
+          <div>
+            <label for="onscreen-keyboard-hint">Pretend I'm a tablet</label>
+            <input type="checkbox" id="onscreen-keyboard-hint" name="onscreen-keyboard-hint" />
+          </div>
+        </div>
+        <div>
+          <p>The value of the <tt>ui_defaults</tt> URL query parameter as sent
+            in the GET request:</p>
+          <pre id="ui-defaults-preview" class="framed">
+          </pre>
+        </div>
+      </div>
+    </div>
+</form>
+
+
+<form id="graphic-selection" class="vbox framed">
+  <legend><b>Image to insert</b></legend>
+  <div>
+    <input type="radio" id="graphic-one" name="graphic" onclick="select_graphics(0)" checked />
+    <label for="graphic-one">One</label><img src="/images/one.png" width=16 height=16>
+    <br />
+    <input type="radio" id="graphic-two" name="graphic" onclick="select_graphics(1)" />
+    <label for="graphic-two">Two</label><img src="/images/two.png" width=16 height=16>
+    <br />
+    <input type="radio" id="graphic-remote" name="graphic" onclick="select_remote_graphic(document.querySelector('#graphic-url').value)" />
+    <label for="graphic-remote">Image URL:</label>
+    <input type="text" id="graphic-url"/>
+  </div>
+  <p>Click insert remote image in Collabora Online</p>
 </form>
 
 <div style="display: none">
@@ -63,35 +131,10 @@
   </form>
 </div>
 
-<p>The value of the <tt>css_variables</tt> URL query parameter as sent
-in a GET request:</p>
-<pre id="css-variables-preview">
-</pre>
-<p>The value of the <tt>ui_defaults</tt> URL query parameter as sent
-in the GET request:</p>
-<pre id="ui-defaults-preview">
-</pre>
-
-<form id="graphic-selection">
-  <fieldset>
-    <legend>Image to insert:</legend>
-    <p>Click insert remote image in Collabora Online</p>
-    <input type="radio" id="graphic-one" name="graphic" onclick="select_graphics(0)" checked />
-    <label for="graphic-one">One</label><img src="/images/one.png" width=16 height=16>
-    <br/>
-    <input type="radio" id="graphic-two" name="graphic" onclick="select_graphics(1)" />
-    <label for="graphic-two">Two</label><img src="/images/two.png" width=16 height=16>
-    <br/>
-    <input type="radio" id="graphic-remote" name="graphic" onclick="select_remote_graphic(document.querySelector('#graphic-url').value)" />
-    <label for="graphic-remote">Image URL:</label>
-    <input type="text" id="graphic-url"/>
-  </fieldset>
-</form>
-
-
-<iframe id="collabora-online-viewer" name="collabora-online-viewer" style="width:90%;height:90%;position:absolute;">
+<iframe id="collabora-online-viewer" name="collabora-online-viewer" height=1000 class="vbox">
 </iframe>
 
+</div>
 <script type="text/javascript" src="javascripts/jquery-3.5.1.js"></script>
 
 <script type="text/javascript">
@@ -143,6 +186,22 @@ $("#collabora-online-server-form").submit(function(event) {
   let uiTheme = $("#ui-theme").val();
   if (uiTheme) {
     uiDefaults += `UITheme=${uiTheme};`;
+  }
+  let savedUIState = $("#saved-ui-state")[0].checked;
+  if (!savedUIState) {
+    uiDefaults += `SavedUIState=false;`;
+  }
+  let showSidebar = $("#show-sidebar")[0].checked;
+  if (!showSidebar) {
+    uiDefaults += `TextSidebar=false;`;
+  }
+  let onscreenKeyboardHint = $("#onscreen-keyboard-hint")[0].checked;
+  if (onscreenKeyboardHint) {
+    uiDefaults += "OnscreenKeyboardHint=true;";
+  }
+  let hideToolbar = $("#hide-toolbar")[0].checked;
+  if (hideToolbar) {
+    uiDefaults += "TextToolbar=false;";
   }
 
   $("#css-variables-preview").text(`${encodeURIComponent(cssValues)}`);
