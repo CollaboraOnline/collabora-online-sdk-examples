@@ -6,3 +6,33 @@ body {
 a {
   color: #00B7FF;
 }
+
+.framed {
+    padding: 15px;
+    border: 1px black dashed;
+    border-radius: 6px;
+}
+
+.vbox {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.hbox {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 0.5em;
+    gap: 0.5em;
+}
+
+.spaced {
+    gap: 15px;
+    grid-gap: 15px;
+}
