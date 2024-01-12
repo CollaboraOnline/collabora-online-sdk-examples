@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render
 import requests
 from lxml import etree
@@ -33,7 +34,13 @@ def index(request):
 
 
 def get_collabora_url(server, mime_type):
-    response = requests.get(server + '/hosting/discovery')
+    #
+    # WARNING: `disable_verify_cert` should never be `True` on a production server.
+    # This is only done to allow the use of self signed certificates on the Collabora
+    # Online server for example purpose.
+    #
+    disable_verify_cert = 'DISABLE_TLS_CERT_VALIDATION' in os.environ and os.environ['DISABLE_TLS_CERT_VALIDATION']
+    response = requests.get(server + '/hosting/discovery', verify=not disable_verify_cert)
     discovery = response.text
     if not discovery:
         print('No able to retrieve the discovery.xml file from the Collabora Online server with the submitted address.')
