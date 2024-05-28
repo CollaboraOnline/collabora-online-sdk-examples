@@ -168,6 +168,7 @@
           i.src = document.location.href.replace(/\?depth=\d+$/, "") + "?depth=" + (depth + 1);
           i.width = innerWidth - 100;
           i.height = innerHeight - 100;
+          i.allow = "clipboard-read *; clipboard-write *";
           const c = 255 - (depth + 1) * 16;
           i.style.background = "rgb(" + c + "," + c + "," + c + ")";
           document.body.appendChild(i);
