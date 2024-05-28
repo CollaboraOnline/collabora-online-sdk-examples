@@ -76,7 +76,7 @@ class App extends React.Component<any, any> {
                     onChange={this.handleInputChanged}
                     onSubmit={this.handleSubmit}/>
                 {loaderForm}
-                <iframe title="Collabora Online Viewer" id="collabora-online-viewer" name="collabora-online-viewer">
+                <iframe title="Collabora Online Viewer" id="collabora-online-viewer" name="collabora-online-viewer" allow="clipboard-read *; clipboard-write *">
                 </iframe>
             </div>
         );
