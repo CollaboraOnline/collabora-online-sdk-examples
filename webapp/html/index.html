@@ -212,7 +212,7 @@ $("#collabora-online-server-form").submit(function(event) {
     .done(function( resp ) {
       let wopiClientUrl = resp['url'];
       let accessToken =  resp['token'];
-      let wopiUrl = wopiClientUrl + 'WOPISrc=' + wopiSrc;
+      let wopiUrl = wopiClientUrl + 'WOPISrc=' + encodeURIComponent(wopiSrc);
       $('#collabora-submit-form').attr('action', wopiUrl)
       $('#css-variables').attr('value', cssValues);
       if (uiDefaults) {
