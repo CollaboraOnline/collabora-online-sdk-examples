@@ -37,6 +37,32 @@ and forwarding api request to the Express server listening by default on port 30
    * `wopi PutFile endpoint`  - the PutFile wopi endpoint has been triggered
    * ` Hello World! Hi!` - the updated file content has been successfully received
     
+### Certificates
+
+It is highly recommended to setup TLS certificates for https.
+
+If you don't have a key pair, I recommend using
+[minica](https://github.com/jsha/minica) to generate a self-signed
+one.
+
+**THIS IS ONLY FOR TEST AND DEVELOPMENT. NEVER USE SELF SIGNED
+CERTIFICATE IN A PRODUCTION ENVIRONMENT**
+
+Then set the environment to indicate where to load the certificate from.
+
+- `SSL_KEY_FILE` contains the path to the private key. If you used
+  the `minica` tool mentionned above, it's the path to the
+  `minica-key.pem` file.
+- `SSL_CRT_FILE` contains the path to the public certificate. If you used
+  the `minica` tool mentionned above, it's the path to the
+  `minica.pem` file.
+
+To enable https, set the `HTTPS` environment variable to `true`.
+
+To use self-signed certificate, NodeJS requires to set the environment
+`NODE_TLS_REJECT_UNAUTHORIZED='0'`, otherwise it will throw a
+`'SELF_SIGNED_CERT_IN_CHAIN'` error.
+
 ## Note
 
 By default the [body-parser][] node.js package used as middleware for the `PutFile` endpoint has a limit option which 
