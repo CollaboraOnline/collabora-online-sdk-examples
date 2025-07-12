@@ -1,6 +1,7 @@
 # Content
 
 - [dotNET](dotNET): .NET example
+- [golang](golang): Go example
 - [nodejs](nodejs): NodeJS example
 - [nodejs-esm](nodejs-esm): same as the nodejs example but using ESM
 - [php](php): PHP example
