@@ -7,6 +7,7 @@
 - [php](php): PHP example
 - [python](python): Python example
 - [reactjs](reactjs): ReactJS example
+- [rust](rust): Rust example
 - html: The frontend part used by some other examples. This is NOT an example itself.
 
 # Running the WebApp Examples
