@@ -3,7 +3,7 @@
 
 <head>
   <title>Collabora Online Integration</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
+  <link rel="stylesheet" href="stylesheets/style.css">
 </head>
 
 <body>
@@ -110,10 +110,10 @@
   <legend><b>Image to insert</b></legend>
   <div>
     <input type="radio" id="graphic-one" name="graphic" onclick="select_graphics(0)" checked />
-    <label for="graphic-one">One</label><img src="/images/one.png" width=16 height=16>
+    <label for="graphic-one">One</label><img src="images/one.png" width=16 height=16>
     <br />
     <input type="radio" id="graphic-two" name="graphic" onclick="select_graphics(1)" />
-    <label for="graphic-two">Two</label><img src="/images/two.png" width=16 height=16>
+    <label for="graphic-two">Two</label><img src="images/two.png" width=16 height=16>
     <br />
     <input type="radio" id="graphic-remote" name="graphic" onclick="select_remote_graphic(document.querySelector('#graphic-url').value)" />
     <label for="graphic-remote">Image URL:</label>
@@ -208,7 +208,7 @@ $("#collabora-online-server-form").submit(function(event) {
   $("#ui-defaults-preview").text(`${encodeURIComponent(uiDefaults)}`);
 
   let wopiSrc = locationOrigin + '/wopi/files/1';
-  $.getJSON("/collaboraUrl?server=" + wopiClientHost)
+  $.getJSON("collaboraUrl?server=" + wopiClientHost)
     .done(function( resp ) {
       let wopiClientUrl = resp['url'];
       let accessToken =  resp['token'];
