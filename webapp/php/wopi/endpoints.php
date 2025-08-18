@@ -5,7 +5,9 @@
      */
     function parseWopiRequest($uri) {
         $path = parse_url($uri, PHP_URL_PATH);
-        preg_match('/^\/example_php\/wopi\/files\/([[:alnum:]]+)(\/contents)?$/', $path, $matches);
+        preg_match('/\/wopi\/files\/([[:alnum:]]+)(\/contents)?$/', $path, $matches);
+        // TODO: Be flexible and match only the end or match the full path?
+        //preg_match('/^\/example_php\/wopi\/files\/([[:alnum:]]+)(\/contents)?$/', $path, $matches);
         $numMatches = count($matches);
 
         // In a real case it is needed to encode an access token based on the file owner id
