@@ -16,7 +16,12 @@
         <label for="collabora-online-server"><b>Collabora Online Server</b></label>
         <input type="text" id="collabora-online-server" name="collabora-online-server" />
         <input type="submit" name="submit" value="Load Collabora Online" />
+        or use Collabora Demo Servers:
+        <button type="button" id="btnEu">EU</button>
+        <button type="button" id="btnUs">US</button>
       </div>
+      <b>This example host must be reachable by the chosen Collabora Online Server.<br>
+      And if demo.*.collaboraonline.com (EU, US) is being used, this example server must have a publicly valid certificate for HTTPS.</b>
       <div class="vbox framed">
         <div class="hbox">
           <div>
@@ -161,6 +166,17 @@ $("#code-btn").on("click", function() {
 
 let locationOrigin = window.location.origin;
 let scheme = locationOrigin.startsWith('https') ? 'https' : 'http';
+
+$("#collabora-online-server").val(scheme + "://127.0.0.1:9980");
+
+btnEu.onclick = function(){
+  $("#collabora-online-server").val("https://demo.eu.collaboraonline.com");
+  $("#collabora-online-server-form").submit();
+};
+btnUs.onclick = function(){
+  $("#collabora-online-server").val("https://demo.us.collaboraonline.com");
+  $("#collabora-online-server-form").submit();
+};
 
 $("#collabora-online-server-form").submit(function(event) {
   event.preventDefault();
