@@ -3,12 +3,13 @@ from django.shortcuts import render
 import requests
 from lxml import etree
 from .forms import CollaboraOnlineServerForm
+import urllib.parse
 
 
 def index(request):
     scheme = request.scheme
     host = request.get_host()
-    wopi_src = f'{scheme}://{host}/wopi/files/1'
+    wopi_src = urllib.parse.quote_plus(f'{scheme}://{host}/wopi/files/1')
     print(wopi_src)
     wopi_url = ''
     if request.method == 'POST':

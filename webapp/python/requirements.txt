@@ -1,6 +1,6 @@
-Django~=3.1.7
-requests~=2.25.1
-lxml~=4.9.4
+Django~=5.2.4
+requests~=2.32.4
+lxml~=6.0.0
 django-extensions
 Werkzeug==2.0
 pyOpenSSL
