@@ -12,7 +12,14 @@ $errorMsg = [
 
 function getDiscovery($server) {
     $discoveryUrl = $server.'/hosting/discovery';
-    $res = file_get_contents($discoveryUrl);
+    $options = array(
+        "ssl" => array(
+            // also disable verification for other examples!
+            "verify_peer" => false,
+            "verify_peer_name" => false,
+        ),
+    );
+    $res = file_get_contents($discoveryUrl, false, stream_context_create($options));
     return $res;
 }
 
@@ -101,7 +108,11 @@ $errorCode = main();
 
 <script type="text/ecmascript">
     function loadDocument() {
+        //var wopiSrc = window.location.origin + '/example_php/wopi/files/1';
         var wopiSrc = encodeURIComponent(window.location.origin + '/example_php/wopi/files/1');
+        //
+        // // TODO: won't work with apache.conf
+        // var wopiSrc = encodeURIComponent(window.location.href + '/wopi/files/1');
 
         var wopiClientUrl = "<?php echo $_WOPI_SRC; ?>";
         if (!wopiClientUrl) {
