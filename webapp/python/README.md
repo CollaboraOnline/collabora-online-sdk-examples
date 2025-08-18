@@ -9,7 +9,7 @@ Please see [../README.md](../README.md) for usage and general information.
   * lxml 6.0.0
 - For SSL support you need in addition:
   * django-extensions
-  * Werkzeug 2.0 (later versions are incompatible)
+  * Werkzeug 2.0 (later versions are incompatible)  // TODO: upgrade to => 2.3.8 => 3.1.3
   * pyOpenSSL
 - These are only the requirements to run this example as-is.
 
