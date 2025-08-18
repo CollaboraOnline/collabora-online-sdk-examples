@@ -101,7 +101,7 @@ $errorCode = main();
 
 <script type="text/ecmascript">
     function loadDocument() {
-        var wopiSrc = window.location.origin + '/example_php/wopi/files/1';
+        var wopiSrc = encodeURIComponent(window.location.origin + '/example_php/wopi/files/1');
 
         var wopiClientUrl = "<?php echo $_WOPI_SRC; ?>";
         if (!wopiClientUrl) {
