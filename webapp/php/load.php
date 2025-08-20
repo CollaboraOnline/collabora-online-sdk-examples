@@ -14,7 +14,9 @@ function getDiscovery($server) {
     $discoveryUrl = $server.'/hosting/discovery';
     $options = array(
         "ssl" => array(
-            // also disable verification for other examples!
+            // TODO: also disable verification for other examples!
+            // TODO: introduce similar mechanism similar to DISABLE_TLS_CERT_VALIDATION
+            // TODO: add security warning
             "verify_peer" => false,
             "verify_peer_name" => false,
         ),

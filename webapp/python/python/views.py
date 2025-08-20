@@ -40,6 +40,7 @@ def get_collabora_url(server, mime_type):
     # This is only done to allow the use of self signed certificates on the Collabora
     # Online server for example purpose.
     #
+    ##### TODO looks good, maybe use comment in other examples!
     disable_verify_cert = 'DISABLE_TLS_CERT_VALIDATION' in os.environ and os.environ['DISABLE_TLS_CERT_VALIDATION']
     response = requests.get(server + '/hosting/discovery', verify=not disable_verify_cert)
     discovery = response.text
