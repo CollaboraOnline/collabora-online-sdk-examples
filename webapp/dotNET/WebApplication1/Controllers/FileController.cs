@@ -5,7 +5,7 @@ namespace WebApplication1.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class FileControllers : Controller
+    public class FileController : Controller
     {
         [HttpGet("/wopi/files/{fileId}")]
         // This endpoint gets the information of the file, which id value is being used in the endpoint and returns it 
