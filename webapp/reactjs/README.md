@@ -1,3 +1,4 @@
+Please see [../README.md](../README.md) for usage and general information.
 
 ## Requirements
 

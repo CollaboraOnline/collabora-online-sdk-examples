@@ -1,3 +1,4 @@
+Please see [../README.md](../README.md) for usage and general information.
 
 ## Requirements
 
@@ -7,7 +8,7 @@
 
 We assume you are familiar with npm and the node.js framework.
 
-1. In order to install dependencies run `npm intall` in the project folder.
+1. In order to install dependencies run `npm install` in the project folder.
 2. In the console run the `npm start` command for starting the server.
 3. Start your browser and make it point to the url
    `http://<host>:3000` or `https://<host>:3000` depending on whether
