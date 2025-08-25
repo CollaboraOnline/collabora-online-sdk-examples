@@ -1,0 +1,14 @@
+SPDXVersion: SPDX-2.2
+FileName: ProofKeyHelper.cs
+SPDXID: SPDXRef-MsUnmodifiedProofCheck
+FileType: SOURCE
+FileChecksum: SHA256: b21cb24a10b3e1597c4eff30bd72839685885a3a3cbef7a98d5ea55d92a8bd43
+LicenseDeclared: MIT
+LicenseConcluded: MIT
+PackageDownloadLocation: https://github.com/microsoft/Office-Online-Test-Tools-and-Documentation/archive/4c39bf7a801bc8ee7974926d318d7f60bb3e8e16.zip
+FileCopyrightText: Copyright (c) 2015 Microsoft
+Creator: Organization: Microsoft Corporation
+#
+# SPDX external file examples:
+# https://events19.linuxfoundation.org/wp-content/uploads/2018/07/SPDX-Bridging-the-Compliance-Tooling-Gap.pdf
+# https://www.fujitsu.com/jp/group/fct/imagesgig5/automotive-linux-summit-02.pdf#page=18
