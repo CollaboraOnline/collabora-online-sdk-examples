@@ -7,3 +7,8 @@ This example has been tested using [Rust](https://www.rust-lang.org/) version 1.
 ## Run the example
 
 `cargo run`
+
+This example offers WOPI-Proof validation and outputs the results to STDOUT.  
+To use WOPI-Proof when running behind a reverse HTTP proxy, set the following environment variable like this.  
+`REVERSE_PROXY_URL_PREFIX="https://public-name.example.org/subdir"`  
+Do NOT append a trailing slash!

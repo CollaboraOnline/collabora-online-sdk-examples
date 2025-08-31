@@ -6,5 +6,6 @@ edition = "2024"
 [dependencies]
 openssl = "0.10.73"
 curl = "0.4.44"
+regex = "1.11.2"
 sxd-document = "0.3.2"
 sxd-xpath = "0.4.2"
