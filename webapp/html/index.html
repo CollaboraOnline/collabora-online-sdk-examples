@@ -164,10 +164,10 @@ $("#code-btn").on("click", function() {
 `);
 });
 
-let locationOrigin = window.location.origin;
-let scheme = locationOrigin.startsWith('https') ? 'https' : 'http';
+let locationOrigin = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/';
+let scheme = window.location.protocol;  // http: | https:
 
-$("#collabora-online-server").val(scheme + "://127.0.0.1:9980");
+$("#collabora-online-server").val(scheme + "//127.0.0.1:9980");
 
 btnEu.onclick = function(){
   $("#collabora-online-server").val("https://demo.eu.collaboraonline.com");
@@ -189,7 +189,7 @@ $("#collabora-online-server-form").submit(function(event) {
     alert('Warning! You have to specify the scheme protocol too (http|https) for the server address.')
     return;
   }
-  if (!wopiClientHost.startsWith(scheme + '://')) {
+  if (!wopiClientHost.startsWith(scheme + '//')) {
     alert('Collabora Online server address scheme does not match the current page url scheme');
     return;
   }
@@ -223,7 +223,7 @@ $("#collabora-online-server-form").submit(function(event) {
   $("#css-variables-preview").text(`${encodeURIComponent(cssValues)}`);
   $("#ui-defaults-preview").text(`${encodeURIComponent(uiDefaults)}`);
 
-  let wopiSrc = locationOrigin + '/wopi/files/1';
+  let wopiSrc = locationOrigin + 'wopi/files/1';
   $.getJSON("collaboraUrl?server=" + wopiClientHost)
     .done(function( resp ) {
       let wopiClientUrl = resp['url'];
