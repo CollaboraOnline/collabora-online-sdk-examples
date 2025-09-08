@@ -16,7 +16,9 @@ These examples demonstrate how to [integrate Collabora Online](https://sdk.colla
 
 The example will run (in) an HTTP server. To then make use of it, you additionally need a Collabora Online HTTP Server. And the example server and the Collabora Online Server need to be able to reach each other to work. The Collabora Online Server will contact the example server by the same address you use to open the example's web page.
 
-Serve via HTTPS/TLS/SSL to make web browsers allow [secure context](https://developer.mozilla.org/docs/Web/Security/Secure_Contexts) actions like using the clipboard. Set the environment variables `SSL_CRT_FILE=crt.pem` and `SSL_KEY_FILE=key.pem` to enable HTTPS when running the examples. When enabling HTTPS on the example, web browsers require to also use HTTPS for the Collabora Online Server URL and visa versa.
+Serve from localhost or via HTTPS/TLS/SSL to make web browsers allow [secure context](https://developer.mozilla.org/docs/Web/Security/Secure_Contexts) actions like using the clipboard.  
+https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts#potentially_trustworthy_origins  
+Set the environment variables `SSL_CRT_FILE=crt.pem` and `SSL_KEY_FILE=key.pem` to enable HTTPS when running the examples. When enabling HTTPS on the example, web browsers require to also use HTTPS for the Collabora Online Server URL and visa versa.
 
 See also: https://sdk.collaboraonline.com/docs/examples.html
 
