@@ -20,8 +20,8 @@ class App extends React.Component<any, any> {
     }
 
     handleSubmit() {
-        const locationOrigin = window.location.origin;
-        const scheme = locationOrigin.startsWith('https') ? 'https' : 'http';
+        const locationOrigin = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+        const scheme = window.location.protocol;  // http: | https:
 
         const wopiClientHost = this.state.serverAddress;
         if (!wopiClientHost) {
@@ -32,7 +32,7 @@ class App extends React.Component<any, any> {
             alert('Warning! You have to specify the scheme protocol too (http|https) for the server address.')
             return;
         }
-        if (!wopiClientHost.startsWith(scheme + '://')) {
+        if (!wopiClientHost.startsWith(scheme + '//')) {
             alert('Collabora Online server address scheme does not match the current page url scheme');
             return;
         }
