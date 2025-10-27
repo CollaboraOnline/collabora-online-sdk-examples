@@ -1,16 +1,18 @@
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
+'use strict';
 
-var indexRouter = require('./routes/index');
-var wopiRouter = require('./routes/wopi');
+let express = require('express');
+let path = require('path');
+let logger = require('morgan');
+let bodyParser = require('body-parser');
+
+let indexRouter = require('./routes/index');
+let wopiRouter = require('./routes/wopi');
 
 // maximum request body size handled by the bodyParser package
 // increase it if you need to handle larger files
-var maxDocumentSize = '100kb';
+const maxDocumentSize = '100kb';
 
-var app = express();
+let app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
