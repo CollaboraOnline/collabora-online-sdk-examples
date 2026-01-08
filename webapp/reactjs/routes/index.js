@@ -40,7 +40,7 @@ router.get('/collaboraUrl', function(req, res) {
       }
       var mimeType = 'text/plain';
       var nodes = xpath.select("/wopi-discovery/net-zone/app[@name='" + mimeType + "']/action", doc);
-      if (!nodes || nodes.length !== 1) {
+      if (!nodes || nodes.length < 1) {
         err = 'The requested mime type is not handled'
         res.status(404).send(err);
         console.log(err);
