@@ -52,7 +52,7 @@ def get_collabora_url(server, mime_type):
         print('The retrieved discovery.xml file is not a valid XML file')
         return
     result = parsed.xpath(f"/wopi-discovery/net-zone/app[@name='{mime_type}']/action")
-    if len(result) != 1:
+    if len(result) < 1:
         print('The requested mime type is not handled')
         return
     online_url = result[0].get('urlsrc')
