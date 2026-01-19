@@ -44,7 +44,7 @@ class App extends React.Component<any, any> {
             .then(data => {
                 const wopiClientUrl = data.url
                 const accessToken = data.token;
-                const wopiUrl = `${wopiClientUrl}WOPISrc=${wopiSrc}`;
+                const wopiUrl = `${wopiClientUrl}WOPISrc=${encodeURIComponent(wopiSrc)}`;
                 console.log(`wopiUrl: ${wopiUrl}`)
                 this.setState({
                     startLoading: true,
