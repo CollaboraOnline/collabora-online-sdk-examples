@@ -140,109 +140,113 @@
 </iframe>
 
 </div>
-<script type="text/javascript" src="javascripts/jquery-3.5.1.js"></script>
 
 <script type="text/javascript">
 
-$("#branded-btn").on("click", function() {
-  $("#css-customization").val(`--co-primary-element=#4c566a;
+document.querySelector('#branded-btn').onclick = function(event) {
+  event.preventDefault();
+  document.querySelector('#css-customization').value = `--co-primary-element=#4c566a;
 --co-primary-element-light=#706aab;
 --co-txt-accent=#2e1a47;
 --co-primary-text=#ffffff;
 --co-border-radius=3px;
 --co-body-bg=#ffffff;
---co-color-main-text=#000000;`);
-});
-$("#branded-btn").form = null
+--co-color-main-text=#000000;`;
+};
 
-$("#code-btn").on("click", function() {
-  $("#css-customization").val(`--color-primary-text=#0ff;
+document.querySelector('#code-btn').onclick = function(event) {
+  event.preventDefault();
+  document.querySelector('#css-customization').value = `--color-primary-text=#0ff;
 --color-background-document=#ff0;
 --color-main-background=#0f0;
 --color-border=#00f;
 --color-main-text=#f00;
-`);
-});
+`;
+};
 
 let locationOrigin = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/';
 let scheme = window.location.protocol;  // http: | https:
 
-$("#collabora-online-server").val(scheme + "//127.0.0.1:9980");
+document.querySelector('#collabora-online-server').value = scheme + '//127.0.0.1:9980';
 
-btnEu.onclick = function(){
-  $("#collabora-online-server").val("https://demo.eu.collaboraonline.com");
-  $("#collabora-online-server-form").submit();
+document.querySelector('#btnEu').onclick = function() {
+  document.querySelector('#collabora-online-server').value = 'https://demo.eu.collaboraonline.com';
+  document.querySelector('#collabora-online-server-form').requestSubmit();
 };
-btnUs.onclick = function(){
-  $("#collabora-online-server").val("https://demo.us.collaboraonline.com");
-  $("#collabora-online-server-form").submit();
+document.querySelector('#btnUs').onclick = function() {
+  document.querySelector('#collabora-online-server').value = 'https://demo.us.collaboraonline.com';
+  document.querySelector('#collabora-online-server-form').requestSubmit();
 };
 
-$("#collabora-online-server-form").submit(function(event) {
+document.querySelector('#collabora-online-server-form').addEventListener('submit', async function(event) {
   event.preventDefault();
-  let wopiClientHost = $("#collabora-online-server").val();
+  let wopiClientHost = document.querySelector('#collabora-online-server').value;
   if (!wopiClientHost) {
     alert('No server address entered');
     return;
   }
   if (!wopiClientHost.startsWith('http')) {
-    alert('Warning! You have to specify the scheme protocol too (http|https) for the server address.')
+    alert('Warning! You have to specify the scheme protocol too (http|https) for the server address.');
     return;
   }
   if (!wopiClientHost.startsWith(scheme + '//')) {
     alert('Collabora Online server address scheme does not match the current page url scheme');
     return;
   }
-  let cssValues = $("#css-customization").val().split('\n').join('').trim();
-  let uiDefaults = ""
-  let uiMode = $("#ui-mode").val();
+  let cssValues = document.querySelector('#css-customization').value.split('\n').join('').trim();
+  let uiDefaults = '';
+  let uiMode = document.querySelector('#ui-mode').value;
   if (uiMode) {
     uiDefaults += `UIMode=${uiMode};`;
   }
-  let uiTheme = $("#ui-theme").val();
+  let uiTheme = document.querySelector('#ui-theme').value;
   if (uiTheme) {
     uiDefaults += `UITheme=${uiTheme};`;
   }
-  let savedUIState = $("#saved-ui-state")[0].checked;
+  let savedUIState = document.querySelector('#saved-ui-state').checked;
   if (!savedUIState) {
     uiDefaults += `SavedUIState=false;`;
   }
-  let showSidebar = $("#show-sidebar")[0].checked;
+  let showSidebar = document.querySelector('#show-sidebar').checked;
   if (!showSidebar) {
     uiDefaults += `TextSidebar=false;`;
   }
-  let onscreenKeyboardHint = $("#onscreen-keyboard-hint")[0].checked;
+  let onscreenKeyboardHint = document.querySelector('#onscreen-keyboard-hint').checked;
   if (onscreenKeyboardHint) {
-    uiDefaults += "OnscreenKeyboardHint=true;";
+    uiDefaults += 'OnscreenKeyboardHint=true;';
   }
-  let hideToolbar = $("#hide-toolbar")[0].checked;
+  let hideToolbar = document.querySelector('#hide-toolbar').checked;
   if (hideToolbar) {
-    uiDefaults += "TextToolbar=false;";
+    uiDefaults += 'TextToolbar=false;';
   }
 
-  $("#css-variables-preview").text(`${encodeURIComponent(cssValues)}`);
-  $("#ui-defaults-preview").text(`${encodeURIComponent(uiDefaults)}`);
+  document.querySelector('#css-variables-preview').textContent = encodeURIComponent(cssValues);
+  document.querySelector('#ui-defaults-preview').textContent = encodeURIComponent(uiDefaults);
 
   let wopiSrc = locationOrigin + 'wopi/files/1';
-  $.getJSON("collaboraUrl?server=" + wopiClientHost)
-    .done(function( resp ) {
-      let wopiClientUrl = resp['url'];
-      let accessToken =  resp['token'];
-      let wopiUrl = wopiClientUrl + 'WOPISrc=' + encodeURIComponent(wopiSrc);
-      $('#collabora-submit-form').attr('action', wopiUrl)
-      $('#css-variables').attr('value', cssValues);
-      if (uiDefaults) {
-        $('#ui-defaults').attr('value', uiDefaults);
+  try {
+      let resp = await fetch('collaboraUrl?server=' + wopiClientHost);
+      if (resp.ok) {
+          let payload = await resp.json();
+          let wopiClientUrl = payload['url'];
+          let accessToken =  payload['token'];
+          let wopiUrl = wopiClientUrl + 'WOPISrc=' + encodeURIComponent(wopiSrc);
+          let submit_form = document.querySelector('#collabora-submit-form');
+          submit_form.action = wopiUrl;
+          document.querySelector('#css-variables').value = cssValues;
+          if (uiDefaults) {
+              document.querySelector('#ui-defaults').value = uiDefaults;
+          }
+          document.querySelector('#access-token').value = accessToken;
+          submit_form.requestSubmit();
+      } else {
+          alert(`Not possible to retrieve the complete Collabora Online url: ${resp.status}`);
       }
-      $('#access-token').attr('value', accessToken);
-      $('#collabora-submit-form').submit();
-    })
-    .fail(function( jqxhr, textStatus, error ) {
-      let err = textStatus + ", " + error;
-      console.log( "Request Failed: " + err );
-      alert('Not possible to retrieve the complete Collabora Online url');
-    });
-})
+  }
+  catch (err) {
+      alert(`Not possible to retrieve the complete Collabora Online url: ${err}`);
+  }
+});
 </script>
 
 </body>
