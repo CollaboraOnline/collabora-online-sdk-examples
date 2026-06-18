@@ -230,7 +230,8 @@ document.querySelector('#collabora-online-server-form').addEventListener('submit
           let payload = await resp.json();
           let wopiClientUrl = payload['url'];
           let accessToken =  payload['token'];
-          let wopiUrl = wopiClientUrl + 'WOPISrc=' + encodeURIComponent(wopiSrc);
+          // lang recommendation: user setting from webapp / WOPI-Host or navigator.language
+          let wopiUrl = wopiClientUrl + 'lang=en-US&WOPISrc=' + encodeURIComponent(wopiSrc);
           let submit_form = document.querySelector('#collabora-submit-form');
           submit_form.action = wopiUrl;
           document.querySelector('#css-variables').value = cssValues;
