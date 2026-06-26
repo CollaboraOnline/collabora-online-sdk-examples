@@ -1,7 +1,11 @@
 import express from 'express';
+import path from 'path';
 
 let router = express.Router();
 export default router;
+
+export const TEST_TOKEN = 'test';
+export const TEST_SETTINGS_TOKEN = 'testsettings';
 
 /* *
  *  wopi CheckFileInfo endpoint
@@ -14,6 +18,9 @@ export default router;
  */
 router.get('/files/:fileId', (req, res) => {
 	console.log('file id: ' + req.params.fileId);
+	let stamp = Date.now();
+	let baseUrl = `${req.protocol}://${req.host}${req.baseUrl}`;
+	let accessToken = req.query['access_token'];
 	// test.txt is just a fake text file
 	// the Size property is the length of the string
 	// returned by the wopi GetFile endpoint
@@ -23,6 +30,14 @@ router.get('/files/:fileId', (req, res) => {
 		UserId: 1,
 		UserCanWrite: true,
 		EnableInsertRemoteImage: true,
+		UserSettings: {
+			uri: `${baseUrl}/settings?type=userconfig&access_token=${accessToken}&fileId=-1`,
+			stamp,
+		},
+		SharedSettings: {
+			uri: `${baseUrl}/settings?type=systemconfig&access_token=${accessToken}&fileId=-1`,
+			stamp,
+		}
 	});
 });
 
@@ -61,4 +76,66 @@ router.post('/files/:fileId/contents', (req, res) => {
 		console.log('Not possible to get the file content.');
 		res.sendStatus(404);
 	}
+});
+
+let settings = {};
+
+router.get('/settings', (req, res) => {
+	let t = req.query['type'];
+	let token = req.query['access_token'];
+	let {fileId} = req.query;
+	if (token != TEST_SETTINGS_TOKEN && token != TEST_TOKEN) {
+		res.sendStatus(401);
+		return;
+	}
+	console.log(`setting.get type=${t}`);
+	if (fileId == -1) {
+		let kind;
+		switch (t) {
+		case 'userconfig':
+			kind = 'user';
+			break;
+		case 'systemconfig':
+			kind = 'shared';
+			break;
+		default:
+			res.sendStatus(400);
+			return;
+		}
+
+		let s = Object.create(settings);
+		s.kind = kind;
+		res.json(s);
+	} else {
+		res.sendStatus(400);
+	}
+});
+
+router.delete('/settings', (req, res) => {
+	console.log('setting.delete');
+	let { fileId } = req.query
+	delete settings[fileId];
+	res.sendStatus(200);
+});
+
+router.post('/settings/upload', (req, res) => {
+	console.log(`setting.post`);
+	let {fileId} = req.query;
+	if (!fileId) {
+		res.sendStatus(400);
+		return;
+	}
+	let filename = path.basename(fileId);
+	let stamp = Date.now();
+	let baseUrl = req.baseUrl;
+	console.log(`setting.post returning ${stamp} ${filename} ${baseUrl}${fileId}`);
+	settings[fileId] = req.body;
+	res.json({
+		status: 'success',
+		filename,
+		details: {
+			stamp,
+			uri: baseUrl + fileId,
+		}
+	});
 });

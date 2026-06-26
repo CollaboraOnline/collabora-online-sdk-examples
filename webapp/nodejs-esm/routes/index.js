@@ -3,6 +3,8 @@ import http from 'http';
 import https from 'https';
 import {DOMParser as Dom} from '@xmldom/xmldom';
 
+import {TEST_TOKEN, TEST_SETTINGS_TOKEN} from './wopi.js'
+
 import xpath from 'xpath';
 
 let router = express.Router();
@@ -48,9 +50,18 @@ router.get('/collaboraUrl', (req, res) => {
                 return;
             }
             let onlineUrl = nodes[0].getAttribute('urlsrc');
+
+            let settingsUrl;
+            nodes = xpath.select("/wopi-discovery/net-zone/app[@name='Settings']/action[@name='iframe']", doc);
+            if (nodes && nodes.length >= 1) {
+                settingsUrl = nodes[0].getAttribute('urlsrc');
+            }
+
             res.json({
                 url: onlineUrl,
-                token: 'test'
+                token: TEST_TOKEN,
+                settingsUrl,
+                settingsToken: TEST_SETTINGS_TOKEN,
             });
         });
         response.on('error', (err) => {
