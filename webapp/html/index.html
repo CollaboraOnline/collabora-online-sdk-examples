@@ -132,6 +132,7 @@
     <input name="css_variables" value="" type="hidden" id="css-variables"/>
     <input name="ui_defaults" value="" type="hidden" id="ui-defaults"/>
     <input name="access_token" value="" type="hidden" id="access-token"/>
+    <input name="wopi_setting_base_url" value="" type="hidden" id="wopi-setting-base-url"/>
     <input type="submit" value="" />
   </form>
 </div>
@@ -228,6 +229,7 @@ document.querySelector('#collabora-online-server-form').addEventListener('submit
       let resp = await fetch('collaboraUrl?server=' + wopiClientHost);
       if (resp.ok) {
           let payload = await resp.json();
+
           let wopiClientUrl = payload['url'];
           let accessToken =  payload['token'];
           // lang recommendation: user setting from webapp / WOPI-Host or navigator.language
@@ -238,6 +240,8 @@ document.querySelector('#collabora-online-server-form').addEventListener('submit
           if (uiDefaults) {
               document.querySelector('#ui-defaults').value = uiDefaults;
           }
+          let settingsBase = new URL('/wopi/settings', locationOrigin);
+          document.querySelector('#wopi-setting-base-url').value = settingsBase;
           document.querySelector('#access-token').value = accessToken;
           submit_form.requestSubmit();
       } else {
